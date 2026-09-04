@@ -1,0 +1,22 @@
+{
+  "schema_version": "local-rag-search-enterprise-benchmark/expanded-v1",
+  "status": "EXPANSION_BLOCKED_NO_COMPATIBLE_OFFICIAL_GOLD",
+  "benchmark": "EnterpriseRAG-Bench",
+  "release": "v1.0.0",
+  "dataset_root": "C:\\Personal_Projects\\ai-projects-data\\datasets\\EnterpriseRAG-Bench\\v1.0.0-dev-confluence",
+  "corpus_scope": "Confluence-only; 5,189 documents",
+  "official_gold_files": {
+    "development_questions": {"rows": 12, "compatible_rows": 12},
+    "extra_questions": {"rows": 100, "compatible_rows": 12, "incompatible_rows": 88}
+  },
+  "proof": {
+    "selection_rule": "question_type == metadata and source_types exactly [confluence] and every expected_doc_id resolves",
+    "extra_exclusions": "88 extra rows have non-Confluence source_types; the remaining 12 are the same IDs as development_questions",
+    "unique_compatible_question_count": 12,
+    "gold_is_official_and_local": true,
+    "labels_not_derived_from_retrievers": true
+  },
+  "retrieval_changed": false,
+  "expanded_evaluation_run": false,
+  "canonical_compatible_artifact": "runs/enterprise-rag-qwen-dev-v1/report.json"
+}

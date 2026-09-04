@@ -1,0 +1,5 @@
+{
+  "incidents": "Production incident reports and postmortems.",
+  "runbooks": "Operational procedures for on-call engineers.",
+  "architecture": "System design and architecture documents."
+}

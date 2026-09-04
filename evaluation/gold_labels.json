@@ -1,0 +1,8 @@
+[
+  {"case_id":"q1","relevant_document_ids":["incidents:database-sessions"]},
+  {"case_id":"q2","relevant_document_ids":["incidents:payment-outage"]},
+  {"case_id":"q3","relevant_document_ids":["incidents:api-latency"]},
+  {"case_id":"q4","relevant_document_ids":["runbooks:payment-recovery"]},
+  {"case_id":"q5","relevant_document_ids":["architecture:authentication"]},
+  {"case_id":"q6","relevant_document_ids":["runbooks:database-pool"]}
+]

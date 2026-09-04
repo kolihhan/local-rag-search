@@ -1,0 +1,1538 @@
+{
+  "schema_version": "local-rag-search-enterprise-benchmark/v2",
+  "provenance": {
+    "benchmark": "EnterpriseRAG-Bench",
+    "release": "v1.0.0",
+    "revision": "56ba6a6",
+    "release_url": "https://github.com/onyx-dot-app/EnterpriseRAG-Bench/releases/tag/v1.0.0",
+    "license_url": "https://raw.githubusercontent.com/onyx-dot-app/EnterpriseRAG-Bench/v1.0.0/LICENSE",
+    "benchmark_scope": "metadata-extra; all Confluence rows; 12 singleton-qrel cases; not core leaderboard",
+    "sha256": {
+      "manifest": "d7d26db35fbda29f09d7e3ebf180d6c18e3c7685c2b05938e3303a2429a7eb93",
+      "development_questions": "1d9ba38b9b6e2f937cfe009c75ba48f15b285c007a474128f5e23296ce783fd8",
+      "extra_questions": "26e23e5ade467512433e0fc012b30ea14b079dde11ad6f93cf380eed1bd96807",
+      "exclusions": "fbdd09e3854da3e8cd48e097299ced1aa0ada114ecf93a07bb7c19af49111e24",
+      "license": "ec3c1cbcaee249b14bc11433949ddd6569837f1110eccc086503b8a5b80e66cf",
+      "slice_0001": "a79320d9c11b58c904ddc444f4b5c374ea1d9e6e3075974bcaea294c2a7e2eb5",
+      "slice_0002": "ecb4e395f710f0eef8332b1e27182c00223da847945a010c10078b3e0c693024"
+    },
+    "corpus_identity": "356fede6f13011e4484e261d694cfb54e66c0212135656bc4fea80c354ddde43",
+    "corpus_document_count": 5189,
+    "cache_path": "C:\\Personal_Projects\\ai-projects\\local-rag-search\\runs\\enterprise-rag-qwen-dev-v1\\dense-cache.json",
+    "cache_identity": "25b13583c60971d41f51e8906f6ac2b02463e5817ba04a890363e6a8ddef8e21",
+    "approved_question_ids": [
+      "qst_0004",
+      "qst_0009",
+      "qst_0016",
+      "qst_0019",
+      "qst_0023",
+      "qst_0024",
+      "qst_0036",
+      "qst_0037",
+      "qst_0039",
+      "qst_0045",
+      "qst_0057",
+      "qst_0081"
+    ],
+    "selection_rule": "official original row order; metadata; source_types exactly [confluence]; resolvable qrels",
+    "selection_scope": "EnterpriseRAG-Bench v1.0.0 metadata-extra; all Confluence rows; 12 singleton-qrel cases; not core leaderboard",
+    "scoring": "dot product over locally L2-normalized vectors; RRF k=60",
+    "normalization": "local L2 normalization; Ollama owns tokenization and pooling",
+    "latency_boundary": "one timed arm invocation per case, including retrieval only",
+    "implementation_file_hashes": {
+      "evaluation\\evaluate.py": "a29493828eb1f3112ee7ca73fafbf7b1bd7d5f6acf6d581f9855b848adff3a2a",
+      "evaluation\\run_enterprise_benchmark.py": "ec851a26145f31bc680ea3d9eaf139e5e50ed183876994346d6a3c187320c6ec",
+      "src\\local_rag\\bm25.py": "3aa76d75a512031d7e9c3cd4c836f00cf9e609ba02c6577d4f44b082566f7455",
+      "src\\local_rag\\dense.py": "b98232a9bb9f96751dc8051dd025a4082eb3925e156890287115a6fc80221911",
+      "src\\local_rag\\fusion.py": "1d9be49dac55acf2b7f673b5faa45e9087052a41018676d04d4bc047551d65f3"
+    }
+  },
+  "config": {
+    "final_depth": 20,
+    "candidate_depth": 60,
+    "rrf_k": 60,
+    "model": "qwen3-embedding:0.6b",
+    "base_url": "http://localhost:11434",
+    "timeout_s": 600.0,
+    "provider_identity": {
+      "provider": "ollama",
+      "model": "qwen3-embedding:0.6b",
+      "model_digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+      "canonical_model": "Qwen/Qwen3-Embedding-0.6B",
+      "hf_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "dimensions": 1024,
+      "base_url": "http://localhost:11434"
+    },
+    "batch_size": 16,
+    "transition_hit_cutoff": 10,
+    "verdict_rule": "Recall@10 primary and MRR@20 secondary; no top-10 regression; one strict gain; ties favor simplicity; conflicts are insufficient",
+    "query_contract": {
+      "template": "Instruct: {task_description}\\nQuery:{query}",
+      "task_description": "Given a web search query, retrieve relevant passages that answer the query",
+      "document_instruction": "none"
+    }
+  },
+  "question_ids": [
+    "qst_0004",
+    "qst_0009",
+    "qst_0016",
+    "qst_0019",
+    "qst_0023",
+    "qst_0024",
+    "qst_0036",
+    "qst_0037",
+    "qst_0039",
+    "qst_0045",
+    "qst_0057",
+    "qst_0081"
+  ],
+  "arms": {
+    "bm25": {
+      "recall_at_1": 0.5,
+      "recall_at_5": 0.5833333333333334,
+      "recall_at_10": 0.75,
+      "mrr_at_20": 0.5510825163398693,
+      "hit_at_10": 0.75,
+      "mean_latency_ms": 70.289925,
+      "p50_latency_ms": 51.0791,
+      "p95_latency_ms": 177.6631,
+      "per_query": {
+        "qst_0004": {
+          "question_id": "qst_0004",
+          "gold_ranks": {
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01": 8
+          },
+          "first_relevant_rank_at_20": 8,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.125,
+          "hit_at_10": true,
+          "latency_ms": 166.23,
+          "ranking": [
+            "dsid_d55b567a4f1c496eaf7c208686118e4d",
+            "dsid_699c1e62f55643d1a344be92afe48dd3",
+            "dsid_17410adcac59431484810c657d355cd1",
+            "dsid_26fe354d38864e5ca426dabec101045a",
+            "dsid_c09d461f123449c5adeea2c57a67686e",
+            "dsid_5555c6b607ef4785bf8df9d0970f743a",
+            "dsid_da469ae609044f12ab5e0500625b5171",
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01",
+            "dsid_299cba8eb2ca425393c765dd3b17145b",
+            "dsid_ed6d086c9faf4272b0ee20d3fa4b6180",
+            "dsid_5e4fced5bea4475c83a105ac26aeb54b",
+            "dsid_192a4590853f4ca8816e331aabacf9e4",
+            "dsid_061b164292f44033ad3f6e0e10f5750b",
+            "dsid_210a3dde798944fc8ae9f6f595558449",
+            "dsid_014604b8e4e14c5484b5fe7ac56efa0a",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_6120bc11462d4180a63a20a4ab10cae1",
+            "dsid_0771b119d60346c2903084d9069b6fe3",
+            "dsid_3a08d88e0f254d3aa92263d441cc2f4d",
+            "dsid_d381ffd6c8904344bfe2771a9614fa66"
+          ]
+        },
+        "qst_0009": {
+          "question_id": "qst_0009",
+          "gold_ranks": {
+            "dsid_cb839e9e2395455f97b798dc681a069b": null
+          },
+          "first_relevant_rank_at_20": null,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.0,
+          "hit_at_10": false,
+          "latency_ms": 51.0791,
+          "ranking": [
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_3c2883e3a9ea4d36b6313d87a562c21a",
+            "dsid_c655aa63432b4aac8ce2de7d44f8e086",
+            "dsid_064ba3c307e54104b1af6c95142b19d5",
+            "dsid_3c79ace6733f476bb54d1d289894d09c",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_e86ea669ce674d9e87dd8712dd738349",
+            "dsid_6ef0c46c99cc4efcbfd869e52ba777fd",
+            "dsid_95cca3fa77314f348e0cc2f994c6a4a2",
+            "dsid_f0617a6daed74573824b624feee8ec94",
+            "dsid_e54a803a65bb4ba5917992772a46ed39",
+            "dsid_6f7992198948439fba3b7194cb3f8b4a",
+            "dsid_261a4ade6f21403185d98805521b1e1d",
+            "dsid_cb30abd2ebb245358158d6dfb1c651dd",
+            "dsid_cb5ee3f342354925aedbac2bd5bd5ac6",
+            "dsid_3014a0f5bca247e6bccce760322f4eb9",
+            "dsid_c09d461f123449c5adeea2c57a67686e",
+            "dsid_eb78c54f7a9c42049f3f4ce84cef8c80",
+            "dsid_c31d2fb79c7246d3b709e788d61e72ce",
+            "dsid_56bd2675855942da93787d76ef7da8f1"
+          ]
+        },
+        "qst_0016": {
+          "question_id": "qst_0016",
+          "gold_ranks": {
+            "dsid_b8e35b6af506467d96a92946c0a16c28": 17
+          },
+          "first_relevant_rank_at_20": 17,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.058823529411764705,
+          "hit_at_10": false,
+          "latency_ms": 43.778,
+          "ranking": [
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_e7829c5e401840069b1019aeddd40aef",
+            "dsid_7938113b44424ae5a7c56ee9acfce0e0",
+            "dsid_daeb3a591b384a8ebc20476248fbe08f",
+            "dsid_15584be40f5444c980658a5857816adb",
+            "dsid_0f85b8e23f4e438396a0834dc5d904c8",
+            "dsid_2917b3d9dde7470da936ba7a37cbebea",
+            "dsid_7961c0d637af4303bb83fccd87e6d8db",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_dc100825029a4e7b8f7c8cc49d474dd7",
+            "dsid_46518ea4e91542f6bdb4ad6d4492f0a9",
+            "dsid_a7a2cbd5e1434acdac6a3bb8765d6d57",
+            "dsid_2e69e0e64c3e48fca73aea96ca3db2db",
+            "dsid_04cfc758a8094367bbff81113419428c",
+            "dsid_c7c1a4b9b9ee4edc8915669212407cce",
+            "dsid_3f59fc6418ac42b19b6b722067392da8",
+            "dsid_b8e35b6af506467d96a92946c0a16c28",
+            "dsid_40a741cbab304253b54511480c4e29d2",
+            "dsid_f0617a6daed74573824b624feee8ec94",
+            "dsid_8d3f696ffd48454ca98929e7771a65af"
+          ]
+        },
+        "qst_0019": {
+          "question_id": "qst_0019",
+          "gold_ranks": {
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 50.1134,
+          "ranking": [
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15",
+            "dsid_5b418cd158ed4864800160499cf871e3",
+            "dsid_c3563f56f51f4a9fbffff817e45cc78d",
+            "dsid_3407ac164f6744d4a2c241e0c5412b59",
+            "dsid_5d42ca2a9ee842bfa3c23f138cb24430",
+            "dsid_a32e255b74ca4577b9a973e03b617703",
+            "dsid_f4d30340e18243fb813e4d95294b8c54",
+            "dsid_162540a4f2d246658a0b7f39d9b8b92d",
+            "dsid_55e4141bce4c4f73a111fdc60d38ca6a",
+            "dsid_47c1ae3e429c46769e022968b19d0797",
+            "dsid_39b172a2acb841cf85212020d426dc3e",
+            "dsid_26fe354d38864e5ca426dabec101045a",
+            "dsid_838e993d7e604cdb8641c47e32b6653a",
+            "dsid_0ca6c645f23e45d1a40756efd503445f",
+            "dsid_d2882124e2734ff6982f28f6ae569590",
+            "dsid_0fa2953ff0d04c4089139c50d10fb6cb",
+            "dsid_7ddc7406da2842c596c07160142d82a8",
+            "dsid_e7829c5e401840069b1019aeddd40aef",
+            "dsid_2f91372eba6f43a4a2cadb406f5a5d66",
+            "dsid_95a841e7b302416b82dbe635f09788a1"
+          ]
+        },
+        "qst_0023": {
+          "question_id": "qst_0023",
+          "gold_ranks": {
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97": 6
+          },
+          "first_relevant_rank_at_20": 6,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.16666666666666666,
+          "hit_at_10": true,
+          "latency_ms": 51.8941,
+          "ranking": [
+            "dsid_589fc75e066648deaec0352b62f76ef7",
+            "dsid_ed6d086c9faf4272b0ee20d3fa4b6180",
+            "dsid_017bfb1fae884cdaa6851f6e992b9efe",
+            "dsid_eab258523e1a4b23a951c5063f9319c6",
+            "dsid_fc0060874c9e44c39a4fe4fb3d2e8d8f",
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97",
+            "dsid_eae602f3def843a5ab022d14e9d84ddf",
+            "dsid_ddcc9309157b44978465c4a6b8b4c9bc",
+            "dsid_261a4ade6f21403185d98805521b1e1d",
+            "dsid_a98ec648b77f4996bb5537cbe562170e",
+            "dsid_d55b567a4f1c496eaf7c208686118e4d",
+            "dsid_e1d8778dfc2a42adb3e2195d3a0125a1",
+            "dsid_4ceed246b9ef402fb3c18df6271671fa",
+            "dsid_84927486f48c4a518751fc39eaf9c5bd",
+            "dsid_dbacebbfca96474a91249e74e54605be",
+            "dsid_39ce4410a60a4f2e8d36051312d6a86a",
+            "dsid_f02853694af44d78b6499a3347e8e6cd",
+            "dsid_5b1ccee63a71455aa0375e5a543ed529",
+            "dsid_17410adcac59431484810c657d355cd1",
+            "dsid_54b7239adb9242b18f96f7dc9687ac7a"
+          ]
+        },
+        "qst_0024": {
+          "question_id": "qst_0024",
+          "gold_ranks": {
+            "dsid_74ebb73359364bc791707a92a3227e3a": 5
+          },
+          "first_relevant_rank_at_20": 5,
+          "recall_at_1": 0.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.2,
+          "hit_at_10": true,
+          "latency_ms": 51.3486,
+          "ranking": [
+            "dsid_85c5ea51943441f880dc4e8d42cc713d",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_c70d63e14aa84195aec43820c018f8b9",
+            "dsid_cf06e75be4f94156ac338f62e3ee028b",
+            "dsid_74ebb73359364bc791707a92a3227e3a",
+            "dsid_b70ef35a4bbc433081fdda277f9c0fe8",
+            "dsid_330be20dd4224d8dad24eb633121ba06",
+            "dsid_40b1c36e577d46f5a2f7baf4528d86ef",
+            "dsid_8116cb3e580543d7bde1c57df351a3f3",
+            "dsid_1b8d06d55d424169aa103d4d00cf849a",
+            "dsid_1e5b33d8f1ef4f89bfcc7e0fa785e827",
+            "dsid_cb848c8dd8f9475685a60cd2008fda2e",
+            "dsid_60ec511e64674ff592fce7803b73efdc",
+            "dsid_161d5bdf634d4867826820a3954bcf20",
+            "dsid_1cdeab0ff7e54b34a0f7e3b28d91427e",
+            "dsid_a8d2f9ab4bcf4475aa0a05088730b639",
+            "dsid_9302ede825f6415a9d742824e882b8d8",
+            "dsid_2d54f1aabaf549c9b83b3aaf071acc92",
+            "dsid_69124f39ea764305b331c9ed6aa728b6",
+            "dsid_ad2da6592ac64cbd8b1c7124ed78f95c"
+          ]
+        },
+        "qst_0036": {
+          "question_id": "qst_0036",
+          "gold_ranks": {
+            "dsid_9835602b1b544034bc6272bf2a8c2969": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 177.6631,
+          "ranking": [
+            "dsid_9835602b1b544034bc6272bf2a8c2969",
+            "dsid_30345ab013724570a9eb2bab3f4853a9",
+            "dsid_2c6c0017c29142cdbf5041ce8ce500b7",
+            "dsid_400455f38e9e4ee1aa1be529698d8b55",
+            "dsid_2f06a42b8a4c41da863601a9a7c17b5b",
+            "dsid_984f94c84fd9460aaca3833eb8a4ca2e",
+            "dsid_6343deafea0440788fb30b1bb9dbbff3",
+            "dsid_eccbafabbad9446fa30221f5f7b6f820",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_2dcf23581ced4f3e985ff1807d199d69",
+            "dsid_4162e6b52c1e4c459813373168a7720d",
+            "dsid_a1bc85219e9847bfb3fa1ca70ba15f76",
+            "dsid_a257aa6f75864d35b4c256a02f04a890",
+            "dsid_9ed385e1cf774dc88c3765209a6ea4cc",
+            "dsid_2498e970db054973a1e028e0302f65df",
+            "dsid_62c4e78a035c4ace99db3ea1a48ea944",
+            "dsid_3216e020f8d84767889fcd7ab933a68f",
+            "dsid_4a4328bbf7a948c3a5e89b9408d90d2b",
+            "dsid_c19bd9d5816d49ef931729f81c69921e",
+            "dsid_2c7a609b7de74c3f996c86751de2f903"
+          ]
+        },
+        "qst_0037": {
+          "question_id": "qst_0037",
+          "gold_ranks": {
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 37.9411,
+          "ranking": [
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7",
+            "dsid_bb14e2f3925b4e27829c4f3c1aea3af1",
+            "dsid_9c7f8d6d2f2b4f0d9c2d3f6a1b8e4a21",
+            "dsid_e6dbaf49eb6d4369bcce39f443edc009",
+            "dsid_8f0b7a8c1dbb4df0b23f6c4e61c9f1a6",
+            "dsid_38a4af67314d46179ae4f3e7ff616661",
+            "dsid_a9118793128f43b4851b7bddf49bfd5f",
+            "dsid_78e00485a3264484936d6ef511b7aeb7",
+            "dsid_d166d23602ea4832a71ff2674840da52",
+            "dsid_9fcf98e525a14529ad3cd0558b042d01",
+            "dsid_f74a0b9d21dd40bca0f1c01166fd7ecb",
+            "dsid_822a49b5b78e48debc56131305219ded",
+            "dsid_8cb8070d41604b67901e60da07713d92",
+            "dsid_cb9345f4cb2845a192084109f57ed72d",
+            "dsid_5db54d85ce48430da6a1fd434dba4671",
+            "dsid_d982b06aadd24e0a91eba17e10ac1f59",
+            "dsid_4b1d1d26a4d64f3c9f0702e7b1d2d3ef",
+            "dsid_88e739fcc28d4764b60636b5a2da05e1",
+            "dsid_2588273815bf4475a35ea5c78f246fa2",
+            "dsid_935cde0b517c4925972c711dcf05b3f4"
+          ]
+        },
+        "qst_0039": {
+          "question_id": "qst_0039",
+          "gold_ranks": {
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 64.9741,
+          "ranking": [
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364",
+            "dsid_9c8f2b7b5a1f49aa8c6b3a8bf84b5d29",
+            "dsid_df51c190539b4af6b0aa8527d279747c",
+            "dsid_bbe88e43700e44b4897c8757a039eb81",
+            "dsid_30ce3339ae2c41e8b5011ae8e824ef8c",
+            "dsid_0e316295b8fb4d0d89cf3e8f23e2d3da",
+            "dsid_cba537ac133041969c37e24dbafad6fa",
+            "dsid_96cbb78c9eee45b3acbf9e7b5ed7bd13",
+            "dsid_822a49b5b78e48debc56131305219ded",
+            "dsid_90e33490795240faa3f03b81670cb8ec",
+            "dsid_f0617a6daed74573824b624feee8ec94",
+            "dsid_80a4859760ce4cf4af51f7c570903ab8",
+            "dsid_97cf16800a454374b5951afaff1618b5",
+            "dsid_d4c1863de0af4d7394ee94a932b2e5b8",
+            "dsid_0c1bd591aab1492fbea9ccf3be4ecf0d",
+            "dsid_26fe354d38864e5ca426dabec101045a",
+            "dsid_82c4da65fc56499b91aa659d722c3874",
+            "dsid_71e40d0467c0473eb3fe1f9df0fcf883",
+            "dsid_490465b963c54ac99c7a60e258dad07e",
+            "dsid_117e5a150aa94adc86295786bd6b7843"
+          ]
+        },
+        "qst_0045": {
+          "question_id": "qst_0045",
+          "gold_ranks": {
+            "dsid_80a4859760ce4cf4af51f7c570903ab8": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 58.9547,
+          "ranking": [
+            "dsid_80a4859760ce4cf4af51f7c570903ab8",
+            "dsid_dbd30b611a8d42deb679ba2f1a69c19a",
+            "dsid_662978747ddb47338b62f7d87c391ca2",
+            "dsid_8b842810996b477a85c0cc795e48f1dc",
+            "dsid_8aa30532ab3f4ed5adfb7e9ef0c9e808",
+            "dsid_eca0cd2771b24821b4805a2ac3bb64e0",
+            "dsid_7d1fc7a541ba4b2f93695948951061b0",
+            "dsid_cb848c8dd8f9475685a60cd2008fda2e",
+            "dsid_eb59b5eedd2144549cd8c79ec1daeadc",
+            "dsid_2d5c341c459a432cb8005566bf1051d8",
+            "dsid_eab258523e1a4b23a951c5063f9319c6",
+            "dsid_1955ed6e7364484f8280f92b55e97557",
+            "dsid_5df32c2cdcc44aaab289e7bfc85eb158",
+            "dsid_2fe6857504b9471fb5954830c70663de",
+            "dsid_98533a5295db479bbc8e1330656f72ff",
+            "dsid_377cffd03cd34c1bb28690bafdc902b9",
+            "dsid_f59a0860f18c49acab904cea19b3a610",
+            "dsid_f30288f77bde4b5aa413deb699741f9f",
+            "dsid_85f477a1d8e4465b990fb4b5ed540de0",
+            "dsid_67716cf2ec8a417fa97c4360765e686a"
+          ]
+        },
+        "qst_0057": {
+          "question_id": "qst_0057",
+          "gold_ranks": {
+            "dsid_a8815e6f0b05476a8581f98a718fe89f": 16
+          },
+          "first_relevant_rank_at_20": 16,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.0625,
+          "hit_at_10": false,
+          "latency_ms": 49.2982,
+          "ranking": [
+            "dsid_e9c5246734c849a899e29c60e6134988",
+            "dsid_ab61c47170634ab193bd118ae8f2f4cd",
+            "dsid_1647a2a5a01c40b58d91cdc8f5ba8d6c",
+            "dsid_cfa4197e52eb4145a7d91650d0252058",
+            "dsid_e4a43aa089834bf0a1ffd7bb90ab0da4",
+            "dsid_7a558e44cea54c58bb5e0c271146f99a",
+            "dsid_fc1b7b3cc6214deca804e4bd3d49c4d1",
+            "dsid_50c0af0d2fd4447a9af6f7870d39c0e0",
+            "dsid_f6b4cb137c444b57bbd4a5d21843d240",
+            "dsid_581d84d97f1e43ad9aad112c0d4c7b50",
+            "dsid_321eee36f1ba4c32bec31bb014f55fd4",
+            "dsid_9e80a57ef60f4e53a8d68bec670c9ce2",
+            "dsid_bb199a2a9be84eb2acfbeded36348cec",
+            "dsid_03f999d536e8469c8ab3b3458a326bb8",
+            "dsid_7231ab6aca7f44f49c5e853a8c104894",
+            "dsid_a8815e6f0b05476a8581f98a718fe89f",
+            "dsid_81ae941b22124a0d9393673e2ab231e7",
+            "dsid_5cde26f232454906879617dab1800fae",
+            "dsid_4688da04d8b549e68271991245290a3b",
+            "dsid_9fa00f910a12437b8935b91fca2eed66"
+          ]
+        },
+        "qst_0081": {
+          "question_id": "qst_0081",
+          "gold_ranks": {
+            "dsid_852961d22e0e48b194d7a3f8ccf17173": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 40.2047,
+          "ranking": [
+            "dsid_852961d22e0e48b194d7a3f8ccf17173",
+            "dsid_80a0d6a8d1574c4fa0b6fa7ec134b499",
+            "dsid_aff1dc99f1af408e819833d35da92f0f",
+            "dsid_52a4dd2f1b18413ba03153d43f07073e",
+            "dsid_fe62463afa4f497d94f15c9185129509",
+            "dsid_c53f6d6bcf4a4c9794cbcbcda36f09ba",
+            "dsid_52b1bf7ae17c474cbdcf671fca80b0ae",
+            "dsid_af125e875c004628a365e906c6d889ea",
+            "dsid_20bb8a225c7548c8990e18e08d6f9548",
+            "dsid_0e0ac7276c864c63a02586fa07ae85e1",
+            "dsid_1d467a976efd48f4b472ac3c5698eeaa",
+            "dsid_fba2659f2d094b7698175eaaac9fe125",
+            "dsid_12b40ee174cd4ba2abb680c627e94bbe",
+            "dsid_18ac88b8d1ce4470a99abeebfca95cd4",
+            "dsid_416192bebc5f423bbe58edfc59ce55f0",
+            "dsid_897c19907e424e668ad729b4d612b9f5",
+            "dsid_04cec1a8a1ce434380acbb0a22559635",
+            "dsid_187ad4c0ccc046e99cc52f4712f547d7",
+            "dsid_e7359c8e34fb486c9ee7ea4d69f68ded",
+            "dsid_d6363b0de8f547e1986591453d347467"
+          ]
+        }
+      }
+    },
+    "dense": {
+      "recall_at_1": 0.75,
+      "recall_at_5": 0.8333333333333334,
+      "recall_at_10": 0.8333333333333334,
+      "mrr_at_20": 0.7916666666666666,
+      "hit_at_10": 0.8333333333333334,
+      "mean_latency_ms": 810.2048916666668,
+      "p50_latency_ms": 272.8772,
+      "p95_latency_ms": 6588.9462,
+      "per_query": {
+        "qst_0004": {
+          "question_id": "qst_0004",
+          "gold_ranks": {
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 6588.9462,
+          "ranking": [
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01",
+            "dsid_0d9cae83ac4945cbb33e9dfd9f8bf6eb",
+            "dsid_3de58c95c57c4e23a115839ba1c25dc3",
+            "dsid_964f838c97bc44feb56077e3d67ccc04",
+            "dsid_872ce35b995a48d1808675944addf3db",
+            "dsid_4e9dd663c5404dd08e34281c4027ad0a",
+            "dsid_b12da6379d67421a917f64df54b506c8",
+            "dsid_baaed5b28f6e430890b72a6176c40608",
+            "dsid_2e2aaad14f5c4ac5b7840ee9f89d31ec",
+            "dsid_85ade33e53334639be778b9c7aabe637",
+            "dsid_699c1e62f55643d1a344be92afe48dd3",
+            "dsid_d28588cb16f9460abe743c778c42da8d",
+            "dsid_59f5e600b7de455fa348849732998e2b",
+            "dsid_6235062d1e2645ce92a482f56eb5a817",
+            "dsid_b632b2d6f86f41c6820e52ae56549a35",
+            "dsid_3732edae093e466190ad604a6a9d8015",
+            "dsid_b720475c75e34ca88f256003e5258d63",
+            "dsid_0b129c86cc6240b088a137d6634eef25",
+            "dsid_b44b702077844529a996f962a7c43368",
+            "dsid_dc80a70cbf894c16b51fc5b1fb4caca1"
+          ]
+        },
+        "qst_0009": {
+          "question_id": "qst_0009",
+          "gold_ranks": {
+            "dsid_cb839e9e2395455f97b798dc681a069b": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 282.8706,
+          "ranking": [
+            "dsid_cb839e9e2395455f97b798dc681a069b",
+            "dsid_28b3432fd9444164a692c7bf1e732931",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_32e1535e0dfe452b9135bc77cebdedc2",
+            "dsid_263dfde75648465fac5c3e2cf4086b72",
+            "dsid_363b6658e9524c3cbadeb4579d4ac7e0",
+            "dsid_e543a6a694b44e24a741a6e19d94a04e",
+            "dsid_538be95952e64be59c342d9d2c076382",
+            "dsid_2977e81b192544f8880733cb828b0250",
+            "dsid_ebfb283712494b82973ca0f9240f5b4f",
+            "dsid_b12da6379d67421a917f64df54b506c8",
+            "dsid_7c08ef109c804c0bb165184b7d78b18c",
+            "dsid_0774d0847f7c429abcb01ffd8873de0e",
+            "dsid_11e9be1601674094931155eaeacf99b7",
+            "dsid_617e4ec39bb345cb9d8feefed2eec967",
+            "dsid_c26368a48ae44702bcbcafd5ca8f161b",
+            "dsid_615d7d13f3764430bb813ce7c32e4b9e",
+            "dsid_baaed5b28f6e430890b72a6176c40608",
+            "dsid_a32e255b74ca4577b9a973e03b617703",
+            "dsid_121f0d51796846699e247ae0984e3cc1"
+          ]
+        },
+        "qst_0016": {
+          "question_id": "qst_0016",
+          "gold_ranks": {
+            "dsid_b8e35b6af506467d96a92946c0a16c28": null
+          },
+          "first_relevant_rank_at_20": null,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.0,
+          "hit_at_10": false,
+          "latency_ms": 287.5471,
+          "ranking": [
+            "dsid_dc100825029a4e7b8f7c8cc49d474dd7",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_6ac082a219a842d388ad2f5588d4a33d",
+            "dsid_b12da6379d67421a917f64df54b506c8",
+            "dsid_2387695d6a9241efac3e88dda4282c74",
+            "dsid_8c30aab9c2384348893cafbbdd68baa5",
+            "dsid_e543a6a694b44e24a741a6e19d94a04e",
+            "dsid_d3a3d7204a194eac88aed1d5d331e946",
+            "dsid_7e78e23df98246758a9c7c3526d41e13",
+            "dsid_193ab7a97dff4598bcb5690bd6a685e6",
+            "dsid_129f18dd83c14445894ebc68621ce3bd",
+            "dsid_cbcf4cd9ad4b41feab86da12adbd026d",
+            "dsid_d5117f2d44514e68aee7ccf55b859618",
+            "dsid_abf0abc0456b4e6c8ab67e5363b9f499",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_af5c6f6eb4a04cec853bbd88bd2d8f0d",
+            "dsid_0781e4cf16ba4ed38b0a9ddcab182114",
+            "dsid_a45508ed7957443e80d0708d9325e517",
+            "dsid_ef0bdaed75c14118bcb85089606161a4",
+            "dsid_55c8a51bff6b48e292571c2c3cf8eea4"
+          ]
+        },
+        "qst_0019": {
+          "question_id": "qst_0019",
+          "gold_ranks": {
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 263.5613,
+          "ranking": [
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15",
+            "dsid_5b363c5dd9ca4531a38ea37adec9146b",
+            "dsid_71005f2b88f94905a3edb6b0924d26bc",
+            "dsid_888f42ac299b4157889531b76cbdc14b",
+            "dsid_69060553614e4df98f330de5b7f9409e",
+            "dsid_16c561fb74504b32ad2f7afcc4594727",
+            "dsid_ba3f8a78da2c4b86b750c291749df363",
+            "dsid_1b97a073f3e4486ab37afdd6e03cacf0",
+            "dsid_6007bb259f2d4cd7a50002a82d6b922b",
+            "dsid_e71453baada94e16ace30a6f9f93a30f",
+            "dsid_b4592b219c2d40baa38ced939301e7b0",
+            "dsid_a52f5482b47f4dbd94f3054b2218e395",
+            "dsid_d8666502896248e49fb66db101ce8a29",
+            "dsid_59bf711b456f4a4bb9d59ec32a023e54",
+            "dsid_c27d72df0c3546aba210f4e839aa06c2",
+            "dsid_bd081d3817ac4c9399b41ccb70cdab23",
+            "dsid_4d0b3b113e3f48edbc0be5219dbfea6e",
+            "dsid_63efbaf30eb54ef09df0a93f53e36606",
+            "dsid_5edbb8466e9e4edab981f94adace64d0",
+            "dsid_e87d69b0d9e7414bb670885869f432ba"
+          ]
+        },
+        "qst_0023": {
+          "question_id": "qst_0023",
+          "gold_ranks": {
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 266.0322,
+          "ranking": [
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97",
+            "dsid_84927486f48c4a518751fc39eaf9c5bd",
+            "dsid_f02853694af44d78b6499a3347e8e6cd",
+            "dsid_a98ec648b77f4996bb5537cbe562170e",
+            "dsid_2680a894a35b4117a2220bb308c4dc23",
+            "dsid_9454b63eae0b4c5d8531ee013de62f18",
+            "dsid_1db9088d36e240a39aa39ff8d604dc6f",
+            "dsid_589fc75e066648deaec0352b62f76ef7",
+            "dsid_d3a3d7204a194eac88aed1d5d331e946",
+            "dsid_d89a0c51edf54f57b576667dc4b056dc",
+            "dsid_5efc026a36144721a82af3dfb2dcdea8",
+            "dsid_04e98bd61eac4ec89e3fc13c38de1b8e",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_f071b87d3f1340feac622bc3945f385d",
+            "dsid_c2289fb6eb774ab581564cd191db1fb6",
+            "dsid_a7382d78a83144c9be085200a71d025a",
+            "dsid_f6b4cb137c444b57bbd4a5d21843d240",
+            "dsid_ae18da5b82df41579fcb6c5d7f794bc2",
+            "dsid_d78b80dce604425ebb87797c5835f01d",
+            "dsid_826be55e005943e8a3de2087e4634bb6"
+          ]
+        },
+        "qst_0024": {
+          "question_id": "qst_0024",
+          "gold_ranks": {
+            "dsid_74ebb73359364bc791707a92a3227e3a": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 270.4657,
+          "ranking": [
+            "dsid_74ebb73359364bc791707a92a3227e3a",
+            "dsid_773eaf089d5842548e7d5799b3ef7923",
+            "dsid_cf06e75be4f94156ac338f62e3ee028b",
+            "dsid_312f8b8dfba74be98c892d2cebe9f068",
+            "dsid_d947fa3ac4444c8ca7f9cf2d50a1a2f8",
+            "dsid_cb848c8dd8f9475685a60cd2008fda2e",
+            "dsid_5078477f06e64d868ccf710573e828a1",
+            "dsid_62a50bad596a4279b2015b2f36b504de",
+            "dsid_90c8aa47b95e4a15855e353dfd4b4fab",
+            "dsid_8c92178c254d467c9854db67aac7c9be",
+            "dsid_3e991a24c7bc4e91b99eb5846b927558",
+            "dsid_a67150ff1ec94d0484d10954d223efae",
+            "dsid_97b25b6f83c542e7b81d6504b5653dcb",
+            "dsid_a043ee4ad3a64469b4ec9e385cd7a292",
+            "dsid_610d2c74a60441e886fcc39e351a4176",
+            "dsid_3ca0a233cf864428b9feb9c6a14fc026",
+            "dsid_129f18dd83c14445894ebc68621ce3bd",
+            "dsid_9502ad9bb6a546b5abaf0a861357de24",
+            "dsid_263dfde75648465fac5c3e2cf4086b72",
+            "dsid_63efbaf30eb54ef09df0a93f53e36606"
+          ]
+        },
+        "qst_0036": {
+          "question_id": "qst_0036",
+          "gold_ranks": {
+            "dsid_9835602b1b544034bc6272bf2a8c2969": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 301.2679,
+          "ranking": [
+            "dsid_9835602b1b544034bc6272bf2a8c2969",
+            "dsid_47005089782e41a0b9bf91402d4a55a6",
+            "dsid_8fca7c9023e64185939550b656b88e1a",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_400455f38e9e4ee1aa1be529698d8b55",
+            "dsid_c8ab6eb559124bc8a55c180e0a93858a",
+            "dsid_6844ccd6b2dc482bb14ed6c95d2e723b",
+            "dsid_441d3a7e5baf44e6af4862bdfbef39f3",
+            "dsid_e6a57e96085a46ee88045b2e26860328",
+            "dsid_1c5a8599bf7e4a2da65886022704aba5",
+            "dsid_9ed385e1cf774dc88c3765209a6ea4cc",
+            "dsid_d3a3d7204a194eac88aed1d5d331e946",
+            "dsid_f72c7c31e630447db7d4aa87a07d3b62",
+            "dsid_e618f6ab9c0e406db239e9522ea4785a",
+            "dsid_e331e42b931e4acc9d21d678991ddc90",
+            "dsid_871b6712caf44f8bbfea4d8a15e436b6",
+            "dsid_16fba71d455b45aca7c185614e43ad81",
+            "dsid_914d75cb27ee4a06b3f69e445d715ab4",
+            "dsid_93cf47bd2c3944ff92569797f07ea724",
+            "dsid_48ff90fa0fa74c89968e04bba60e61bd"
+          ]
+        },
+        "qst_0037": {
+          "question_id": "qst_0037",
+          "gold_ranks": {
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 304.2475,
+          "ranking": [
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7",
+            "dsid_cb30abd2ebb245358158d6dfb1c651dd",
+            "dsid_cb9345f4cb2845a192084109f57ed72d",
+            "dsid_d283ff2efa944227b3bcad9a4e3d28f4",
+            "dsid_f35421860eb64655a9b5d62c344b45b3",
+            "dsid_d1a2ffd106b14743acfd62e901cf7803",
+            "dsid_acab3f167da743889845cd0cced08f45",
+            "dsid_c03c9a3a983d4fe88ea4e2054c9e9fa3",
+            "dsid_9c7f8d6d2f2b4f0d9c2d3f6a1b8e4a21",
+            "dsid_3c79ace6733f476bb54d1d289894d09c",
+            "dsid_c8113bcb716945718b8165f882e37952",
+            "dsid_944280d3e953446ead301635c5cf5823",
+            "dsid_6e8847f7278e4e929393087264a310ab",
+            "dsid_e9b928814a8b4229a4419c67891b47bc",
+            "dsid_73cfbef702264ccb93d146a50fd2315e",
+            "dsid_cad3a0d43b204c85809dec49017d3004",
+            "dsid_5fdfdc86509e45f4a64f936d6260e293",
+            "dsid_426645772b534ac4a6af358830cf7982",
+            "dsid_88de0ddadfa643f98ba492ae90b055eb",
+            "dsid_14bc895cb3a64c71a3632a743dff3cee"
+          ]
+        },
+        "qst_0039": {
+          "question_id": "qst_0039",
+          "gold_ranks": {
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364": 2
+          },
+          "first_relevant_rank_at_20": 2,
+          "recall_at_1": 0.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.5,
+          "hit_at_10": true,
+          "latency_ms": 269.3193,
+          "ranking": [
+            "dsid_9c8f2b7b5a1f49aa8c6b3a8bf84b5d29",
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364",
+            "dsid_a36ac3751b354611ae7b461385de36de",
+            "dsid_490465b963c54ac99c7a60e258dad07e",
+            "dsid_cba537ac133041969c37e24dbafad6fa",
+            "dsid_11c048aa9480427384e13ab303e85512",
+            "dsid_75ae758fddb8494eb81f572b3f107ddf",
+            "dsid_bfbbf4e3cad04934973a9bb51691e32e",
+            "dsid_c85ec481d2834784bcad646cf8e0942a",
+            "dsid_fe9a450c1f5f47f28e15f0bc863c7564",
+            "dsid_1fa4ab90b42f4838acae2ea1389896e2",
+            "dsid_b4517f2b4cc34bf4a0f0fbfd658558b6",
+            "dsid_d178969e0b22455a8e9b6aef3819a4f3",
+            "dsid_aa86bec68b934d5dbd6bd07191c57dc4",
+            "dsid_146ae180cb1a4f3da23966f413fa0fe3",
+            "dsid_c4c638c85f2846c89340c593338f4661",
+            "dsid_f86a35258bc34133be13a8bd7b917021",
+            "dsid_707fe696478d4a1b97a257f97755c2ce",
+            "dsid_1fe64995cf124ac2ac05b5818290f33d",
+            "dsid_46025afb92f0430d8e9e2eef9092ec6f"
+          ]
+        },
+        "qst_0045": {
+          "question_id": "qst_0045",
+          "gold_ranks": {
+            "dsid_80a4859760ce4cf4af51f7c570903ab8": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 265.3014,
+          "ranking": [
+            "dsid_80a4859760ce4cf4af51f7c570903ab8",
+            "dsid_eab258523e1a4b23a951c5063f9319c6",
+            "dsid_662978747ddb47338b62f7d87c391ca2",
+            "dsid_75c4bb387a19472fa56c1ea9d8225189",
+            "dsid_2d5c341c459a432cb8005566bf1051d8",
+            "dsid_2fe6857504b9471fb5954830c70663de",
+            "dsid_bcd64eef5c3746eb8842ab0776b2b47a",
+            "dsid_bd2a2e090a604950a5ed6226f82400e8",
+            "dsid_1955ed6e7364484f8280f92b55e97557",
+            "dsid_a9fa13e43acf4ac399484cd7e3111076",
+            "dsid_f1f4220da96d42f48d2622a481fa91d7",
+            "dsid_ae86d527abd144219f7e3adad356b7af",
+            "dsid_8aa30532ab3f4ed5adfb7e9ef0c9e808",
+            "dsid_ac95fcc92a424c6584336e7ba0aa8c4b",
+            "dsid_7f226972e0a1415583253c17b2b18a0d",
+            "dsid_54d691a5d2d248409b5d57b7368dc697",
+            "dsid_5e3f4795283b450fa87df01d141c253b",
+            "dsid_4d33d1ef7ea741578c31100a9dbde3d9",
+            "dsid_08a7d3112d1a401cb106498ba524ba93",
+            "dsid_9afe19eed10e47368e88935fb9441ce0"
+          ]
+        },
+        "qst_0057": {
+          "question_id": "qst_0057",
+          "gold_ranks": {
+            "dsid_a8815e6f0b05476a8581f98a718fe89f": null
+          },
+          "first_relevant_rank_at_20": null,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.0,
+          "hit_at_10": false,
+          "latency_ms": 350.0223,
+          "ranking": [
+            "dsid_026bbc0fbb97423ab9de20d8f99402d6",
+            "dsid_5cf28151bea84f5b9736145cc853cf83",
+            "dsid_c59bf84ca3dd4a01bd754b39683a777b",
+            "dsid_3c368798ac95482a8bef9e28b6f4af96",
+            "dsid_089826a919084ec38ebe58576c17add1",
+            "dsid_ea08c39b16de4b76bf74ef89523333f2",
+            "dsid_718a5c08e1ef47d38634c3623ace0803",
+            "dsid_c4b9b9e3a7e84a41b6531ebe75111116",
+            "dsid_f5da69c48bb54c09b45de4ff93b48bff",
+            "dsid_2add37caccb641db8f1d608bc5878847",
+            "dsid_0f7de237f25e42c98c53c0924606161d",
+            "dsid_023da989e8d64c458d4e27a726105d2b",
+            "dsid_d740645aa8ce42059a6967bdad866b82",
+            "dsid_4688da04d8b549e68271991245290a3b",
+            "dsid_e9c5246734c849a899e29c60e6134988",
+            "dsid_f2e8632f23764348a6646842c53d1bdd",
+            "dsid_7c4cfc509ab44c459b7ff422d2ddba6c",
+            "dsid_21a3aa2c0338455790a8c909b9d1fd3f",
+            "dsid_12bc45ef239d4009b6a1acff8ac3ec38",
+            "dsid_c1464bf0cee049cf82b81ac061701731"
+          ]
+        },
+        "qst_0081": {
+          "question_id": "qst_0081",
+          "gold_ranks": {
+            "dsid_852961d22e0e48b194d7a3f8ccf17173": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 272.8772,
+          "ranking": [
+            "dsid_852961d22e0e48b194d7a3f8ccf17173",
+            "dsid_80a0d6a8d1574c4fa0b6fa7ec134b499",
+            "dsid_0e0ac7276c864c63a02586fa07ae85e1",
+            "dsid_c5a4e3a5f808420588c1533862e9486a",
+            "dsid_e0c1e3cec31d45229facd21eee0fe0cc",
+            "dsid_52a4dd2f1b18413ba03153d43f07073e",
+            "dsid_193ab7a97dff4598bcb5690bd6a685e6",
+            "dsid_8d323c785b254126b3a1da7c8cf3d47a",
+            "dsid_64dab5ab34404e0286d18d19319ac7bf",
+            "dsid_2387695d6a9241efac3e88dda4282c74",
+            "dsid_51219e8733564137a709b7a5642f960b",
+            "dsid_2222010f85764778aa8aa8dfe3ecf16a",
+            "dsid_91c590c51f12409f9606745f325dc8cf",
+            "dsid_d208b7227aff40309d40cdadff67b65d",
+            "dsid_3b95be035d4541328937e83e2aef2721",
+            "dsid_b9ea311f3ca846849a235a477a110464",
+            "dsid_da85bdf3020d41ea9d29597562101f03",
+            "dsid_dbeca89930a946e09e585e632b0bdc9b",
+            "dsid_1eeb1ae7792d4213bba717768cc6e48e",
+            "dsid_ef4d0f403797422ab9de5e589431921c"
+          ]
+        }
+      }
+    },
+    "rrf": {
+      "recall_at_1": 0.75,
+      "recall_at_5": 0.9166666666666666,
+      "recall_at_10": 0.9166666666666666,
+      "mrr_at_20": 0.7986111111111112,
+      "hit_at_10": 0.9166666666666666,
+      "mean_latency_ms": 350.29352500000005,
+      "p50_latency_ms": 344.7212,
+      "p95_latency_ms": 416.3072,
+      "per_query": {
+        "qst_0004": {
+          "question_id": "qst_0004",
+          "gold_ranks": {
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 416.3072,
+          "ranking": [
+            "dsid_78001368bf0e456ea8a4d0417b2c5b01",
+            "dsid_699c1e62f55643d1a344be92afe48dd3",
+            "dsid_872ce35b995a48d1808675944addf3db",
+            "dsid_b12da6379d67421a917f64df54b506c8",
+            "dsid_8d97d64cfcb14cd3b13589b86b0a0c02",
+            "dsid_d55b567a4f1c496eaf7c208686118e4d",
+            "dsid_6120bc11462d4180a63a20a4ab10cae1",
+            "dsid_9ed385e1cf774dc88c3765209a6ea4cc",
+            "dsid_ed6d086c9faf4272b0ee20d3fa4b6180",
+            "dsid_0b129c86cc6240b088a137d6634eef25",
+            "dsid_083e16b91d8448e3be4cb74f4622058a",
+            "dsid_00fad006828541609c6e507efe2fc0eb",
+            "dsid_0d9cae83ac4945cbb33e9dfd9f8bf6eb",
+            "dsid_17410adcac59431484810c657d355cd1",
+            "dsid_3de58c95c57c4e23a115839ba1c25dc3",
+            "dsid_26fe354d38864e5ca426dabec101045a",
+            "dsid_964f838c97bc44feb56077e3d67ccc04",
+            "dsid_c09d461f123449c5adeea2c57a67686e",
+            "dsid_5555c6b607ef4785bf8df9d0970f743a",
+            "dsid_4e9dd663c5404dd08e34281c4027ad0a"
+          ]
+        },
+        "qst_0009": {
+          "question_id": "qst_0009",
+          "gold_ranks": {
+            "dsid_cb839e9e2395455f97b798dc681a069b": 3
+          },
+          "first_relevant_rank_at_20": 3,
+          "recall_at_1": 0.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.3333333333333333,
+          "hit_at_10": true,
+          "latency_ms": 360.3904,
+          "ranking": [
+            "dsid_7c08ef109c804c0bb165184b7d78b18c",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_cb839e9e2395455f97b798dc681a069b",
+            "dsid_28b3432fd9444164a692c7bf1e732931",
+            "dsid_3c2883e3a9ea4d36b6313d87a562c21a",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_c655aa63432b4aac8ce2de7d44f8e086",
+            "dsid_064ba3c307e54104b1af6c95142b19d5",
+            "dsid_32e1535e0dfe452b9135bc77cebdedc2",
+            "dsid_363b6658e9524c3cbadeb4579d4ac7e0",
+            "dsid_3c79ace6733f476bb54d1d289894d09c",
+            "dsid_263dfde75648465fac5c3e2cf4086b72",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_e543a6a694b44e24a741a6e19d94a04e",
+            "dsid_e86ea669ce674d9e87dd8712dd738349",
+            "dsid_538be95952e64be59c342d9d2c076382",
+            "dsid_6ef0c46c99cc4efcbfd869e52ba777fd",
+            "dsid_2977e81b192544f8880733cb828b0250",
+            "dsid_95cca3fa77314f348e0cc2f994c6a4a2",
+            "dsid_ebfb283712494b82973ca0f9240f5b4f"
+          ]
+        },
+        "qst_0016": {
+          "question_id": "qst_0016",
+          "gold_ranks": {
+            "dsid_b8e35b6af506467d96a92946c0a16c28": null
+          },
+          "first_relevant_rank_at_20": null,
+          "recall_at_1": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank_at_20": 0.0,
+          "hit_at_10": false,
+          "latency_ms": 344.7212,
+          "ranking": [
+            "dsid_dc100825029a4e7b8f7c8cc49d474dd7",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_d3a3d7204a194eac88aed1d5d331e946",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_e7829c5e401840069b1019aeddd40aef",
+            "dsid_6ac082a219a842d388ad2f5588d4a33d",
+            "dsid_7938113b44424ae5a7c56ee9acfce0e0",
+            "dsid_b12da6379d67421a917f64df54b506c8",
+            "dsid_daeb3a591b384a8ebc20476248fbe08f",
+            "dsid_15584be40f5444c980658a5857816adb",
+            "dsid_2387695d6a9241efac3e88dda4282c74",
+            "dsid_0f85b8e23f4e438396a0834dc5d904c8",
+            "dsid_8c30aab9c2384348893cafbbdd68baa5",
+            "dsid_2917b3d9dde7470da936ba7a37cbebea",
+            "dsid_e543a6a694b44e24a741a6e19d94a04e",
+            "dsid_7961c0d637af4303bb83fccd87e6d8db",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_7e78e23df98246758a9c7c3526d41e13",
+            "dsid_193ab7a97dff4598bcb5690bd6a685e6",
+            "dsid_46518ea4e91542f6bdb4ad6d4492f0a9"
+          ]
+        },
+        "qst_0019": {
+          "question_id": "qst_0019",
+          "gold_ranks": {
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 320.6186,
+          "ranking": [
+            "dsid_e7a4deb2e7ff4361978a272e91e20f15",
+            "dsid_5d42ca2a9ee842bfa3c23f138cb24430",
+            "dsid_b4592b219c2d40baa38ced939301e7b0",
+            "dsid_95a841e7b302416b82dbe635f09788a1",
+            "dsid_a32e255b74ca4577b9a973e03b617703",
+            "dsid_0ca6c645f23e45d1a40756efd503445f",
+            "dsid_2f91372eba6f43a4a2cadb406f5a5d66",
+            "dsid_a6e7e19f598943b692d84638aa9a9a6d",
+            "dsid_b60c40aab7854853970bc7e57b574033",
+            "dsid_808454fa642a4a5bb361b7ae4ead1352",
+            "dsid_5b363c5dd9ca4531a38ea37adec9146b",
+            "dsid_5b418cd158ed4864800160499cf871e3",
+            "dsid_71005f2b88f94905a3edb6b0924d26bc",
+            "dsid_c3563f56f51f4a9fbffff817e45cc78d",
+            "dsid_3407ac164f6744d4a2c241e0c5412b59",
+            "dsid_888f42ac299b4157889531b76cbdc14b",
+            "dsid_69060553614e4df98f330de5b7f9409e",
+            "dsid_16c561fb74504b32ad2f7afcc4594727",
+            "dsid_ba3f8a78da2c4b86b750c291749df363",
+            "dsid_f4d30340e18243fb813e4d95294b8c54"
+          ]
+        },
+        "qst_0023": {
+          "question_id": "qst_0023",
+          "gold_ranks": {
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 335.8688,
+          "ranking": [
+            "dsid_0a6c6e67d89c4cb4b053a7c04d780d97",
+            "dsid_589fc75e066648deaec0352b62f76ef7",
+            "dsid_a98ec648b77f4996bb5537cbe562170e",
+            "dsid_84927486f48c4a518751fc39eaf9c5bd",
+            "dsid_f02853694af44d78b6499a3347e8e6cd",
+            "dsid_f6b4cb137c444b57bbd4a5d21843d240",
+            "dsid_5efc026a36144721a82af3dfb2dcdea8",
+            "dsid_d89a0c51edf54f57b576667dc4b056dc",
+            "dsid_826be55e005943e8a3de2087e4634bb6",
+            "dsid_28d2c7c4943e4825a2069f04e5a6a967",
+            "dsid_7ccaa420d6e448bfa483a4a1bce30816",
+            "dsid_dc100825029a4e7b8f7c8cc49d474dd7",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_ed6d086c9faf4272b0ee20d3fa4b6180",
+            "dsid_017bfb1fae884cdaa6851f6e992b9efe",
+            "dsid_eab258523e1a4b23a951c5063f9319c6",
+            "dsid_2680a894a35b4117a2220bb308c4dc23",
+            "dsid_fc0060874c9e44c39a4fe4fb3d2e8d8f",
+            "dsid_9454b63eae0b4c5d8531ee013de62f18",
+            "dsid_1db9088d36e240a39aa39ff8d604dc6f"
+          ]
+        },
+        "qst_0024": {
+          "question_id": "qst_0024",
+          "gold_ranks": {
+            "dsid_74ebb73359364bc791707a92a3227e3a": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 341.8099,
+          "ranking": [
+            "dsid_74ebb73359364bc791707a92a3227e3a",
+            "dsid_cf06e75be4f94156ac338f62e3ee028b",
+            "dsid_cb848c8dd8f9475685a60cd2008fda2e",
+            "dsid_773eaf089d5842548e7d5799b3ef7923",
+            "dsid_ad2da6592ac64cbd8b1c7124ed78f95c",
+            "dsid_b2649f52832c4b208b5bd1b680d8cc87",
+            "dsid_3e991a24c7bc4e91b99eb5846b927558",
+            "dsid_f1b208f3637e4987aeab371242a5bea5",
+            "dsid_8a16a7b12f714c458c3a3450ba030fe6",
+            "dsid_85c5ea51943441f880dc4e8d42cc713d",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_c70d63e14aa84195aec43820c018f8b9",
+            "dsid_312f8b8dfba74be98c892d2cebe9f068",
+            "dsid_d947fa3ac4444c8ca7f9cf2d50a1a2f8",
+            "dsid_b70ef35a4bbc433081fdda277f9c0fe8",
+            "dsid_330be20dd4224d8dad24eb633121ba06",
+            "dsid_5078477f06e64d868ccf710573e828a1",
+            "dsid_40b1c36e577d46f5a2f7baf4528d86ef",
+            "dsid_62a50bad596a4279b2015b2f36b504de",
+            "dsid_8116cb3e580543d7bde1c57df351a3f3"
+          ]
+        },
+        "qst_0036": {
+          "question_id": "qst_0036",
+          "gold_ranks": {
+            "dsid_9835602b1b544034bc6272bf2a8c2969": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 345.7858,
+          "ranking": [
+            "dsid_9835602b1b544034bc6272bf2a8c2969",
+            "dsid_400455f38e9e4ee1aa1be529698d8b55",
+            "dsid_9ed385e1cf774dc88c3765209a6ea4cc",
+            "dsid_2c6c0017c29142cdbf5041ce8ce500b7",
+            "dsid_441d3a7e5baf44e6af4862bdfbef39f3",
+            "dsid_4ec5385b4de3437ab778502043b53a1e",
+            "dsid_30345ab013724570a9eb2bab3f4853a9",
+            "dsid_47005089782e41a0b9bf91402d4a55a6",
+            "dsid_8fca7c9023e64185939550b656b88e1a",
+            "dsid_b6c4bccbf8864e299b0de9ba50815793",
+            "dsid_2f06a42b8a4c41da863601a9a7c17b5b",
+            "dsid_984f94c84fd9460aaca3833eb8a4ca2e",
+            "dsid_c8ab6eb559124bc8a55c180e0a93858a",
+            "dsid_6343deafea0440788fb30b1bb9dbbff3",
+            "dsid_6844ccd6b2dc482bb14ed6c95d2e723b",
+            "dsid_eccbafabbad9446fa30221f5f7b6f820",
+            "dsid_3c2f1b8e4b4e4b69a2c6b9f1f5c7b210",
+            "dsid_e6a57e96085a46ee88045b2e26860328",
+            "dsid_2dcf23581ced4f3e985ff1807d199d69",
+            "dsid_1c5a8599bf7e4a2da65886022704aba5"
+          ]
+        },
+        "qst_0037": {
+          "question_id": "qst_0037",
+          "gold_ranks": {
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 361.0071,
+          "ranking": [
+            "dsid_c1a652436b2e4c949f5de9f5da227cd7",
+            "dsid_9c7f8d6d2f2b4f0d9c2d3f6a1b8e4a21",
+            "dsid_cb9345f4cb2845a192084109f57ed72d",
+            "dsid_bb14e2f3925b4e27829c4f3c1aea3af1",
+            "dsid_ce0cff545e5a42fc991ca4c542f083d5",
+            "dsid_8cb8070d41604b67901e60da07713d92",
+            "dsid_06553e3df89f4e36bc6383ef75eb1619",
+            "dsid_cb30abd2ebb245358158d6dfb1c651dd",
+            "dsid_d283ff2efa944227b3bcad9a4e3d28f4",
+            "dsid_e6dbaf49eb6d4369bcce39f443edc009",
+            "dsid_8f0b7a8c1dbb4df0b23f6c4e61c9f1a6",
+            "dsid_f35421860eb64655a9b5d62c344b45b3",
+            "dsid_38a4af67314d46179ae4f3e7ff616661",
+            "dsid_d1a2ffd106b14743acfd62e901cf7803",
+            "dsid_a9118793128f43b4851b7bddf49bfd5f",
+            "dsid_acab3f167da743889845cd0cced08f45",
+            "dsid_78e00485a3264484936d6ef511b7aeb7",
+            "dsid_c03c9a3a983d4fe88ea4e2054c9e9fa3",
+            "dsid_d166d23602ea4832a71ff2674840da52",
+            "dsid_3c79ace6733f476bb54d1d289894d09c"
+          ]
+        },
+        "qst_0039": {
+          "question_id": "qst_0039",
+          "gold_ranks": {
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 351.0869,
+          "ranking": [
+            "dsid_36cc238e32514fc09cfad6e7d1ce7364",
+            "dsid_9c8f2b7b5a1f49aa8c6b3a8bf84b5d29",
+            "dsid_cba537ac133041969c37e24dbafad6fa",
+            "dsid_490465b963c54ac99c7a60e258dad07e",
+            "dsid_df51c190539b4af6b0aa8527d279747c",
+            "dsid_11c048aa9480427384e13ab303e85512",
+            "dsid_822a49b5b78e48debc56131305219ded",
+            "dsid_71e40d0467c0473eb3fe1f9df0fcf883",
+            "dsid_1fe64995cf124ac2ac05b5818290f33d",
+            "dsid_c4c638c85f2846c89340c593338f4661",
+            "dsid_f86a35258bc34133be13a8bd7b917021",
+            "dsid_aa86bec68b934d5dbd6bd07191c57dc4",
+            "dsid_19c7edeabbf44c80b8bd678da041c64d",
+            "dsid_9802bf46f26c4d3682f3499cf2eae737",
+            "dsid_a36ac3751b354611ae7b461385de36de",
+            "dsid_bbe88e43700e44b4897c8757a039eb81",
+            "dsid_30ce3339ae2c41e8b5011ae8e824ef8c",
+            "dsid_0e316295b8fb4d0d89cf3e8f23e2d3da",
+            "dsid_75ae758fddb8494eb81f572b3f107ddf",
+            "dsid_96cbb78c9eee45b3acbf9e7b5ed7bd13"
+          ]
+        },
+        "qst_0045": {
+          "question_id": "qst_0045",
+          "gold_ranks": {
+            "dsid_80a4859760ce4cf4af51f7c570903ab8": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 352.3166,
+          "ranking": [
+            "dsid_80a4859760ce4cf4af51f7c570903ab8",
+            "dsid_662978747ddb47338b62f7d87c391ca2",
+            "dsid_eab258523e1a4b23a951c5063f9319c6",
+            "dsid_2d5c341c459a432cb8005566bf1051d8",
+            "dsid_8aa30532ab3f4ed5adfb7e9ef0c9e808",
+            "dsid_2fe6857504b9471fb5954830c70663de",
+            "dsid_1955ed6e7364484f8280f92b55e97557",
+            "dsid_75c4bb387a19472fa56c1ea9d8225189",
+            "dsid_bd2a2e090a604950a5ed6226f82400e8",
+            "dsid_bcd64eef5c3746eb8842ab0776b2b47a",
+            "dsid_eb59b5eedd2144549cd8c79ec1daeadc",
+            "dsid_cb848c8dd8f9475685a60cd2008fda2e",
+            "dsid_54d691a5d2d248409b5d57b7368dc697",
+            "dsid_8b842810996b477a85c0cc795e48f1dc",
+            "dsid_5df32c2cdcc44aaab289e7bfc85eb158",
+            "dsid_eca0cd2771b24821b4805a2ac3bb64e0",
+            "dsid_7f226972e0a1415583253c17b2b18a0d",
+            "dsid_ae86d527abd144219f7e3adad356b7af",
+            "dsid_4d33d1ef7ea741578c31100a9dbde3d9",
+            "dsid_98533a5295db479bbc8e1330656f72ff"
+          ]
+        },
+        "qst_0057": {
+          "question_id": "qst_0057",
+          "gold_ranks": {
+            "dsid_a8815e6f0b05476a8581f98a718fe89f": 4
+          },
+          "first_relevant_rank_at_20": 4,
+          "recall_at_1": 0.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 0.25,
+          "hit_at_10": true,
+          "latency_ms": 340.3645,
+          "ranking": [
+            "dsid_e9c5246734c849a899e29c60e6134988",
+            "dsid_4688da04d8b549e68271991245290a3b",
+            "dsid_9e80a57ef60f4e53a8d68bec670c9ce2",
+            "dsid_a8815e6f0b05476a8581f98a718fe89f",
+            "dsid_c59bf84ca3dd4a01bd754b39683a777b",
+            "dsid_c4b9b9e3a7e84a41b6531ebe75111116",
+            "dsid_f011dd41132f435497d5e364a9be72c5",
+            "dsid_5cde26f232454906879617dab1800fae",
+            "dsid_6cf985e095eb46198d659150fbffa5b8",
+            "dsid_f1cc6daafac04b2a8a4e8045bd03db9e",
+            "dsid_026bbc0fbb97423ab9de20d8f99402d6",
+            "dsid_5cf28151bea84f5b9736145cc853cf83",
+            "dsid_ab61c47170634ab193bd118ae8f2f4cd",
+            "dsid_1647a2a5a01c40b58d91cdc8f5ba8d6c",
+            "dsid_3c368798ac95482a8bef9e28b6f4af96",
+            "dsid_cfa4197e52eb4145a7d91650d0252058",
+            "dsid_089826a919084ec38ebe58576c17add1",
+            "dsid_e4a43aa089834bf0a1ffd7bb90ab0da4",
+            "dsid_7a558e44cea54c58bb5e0c271146f99a",
+            "dsid_ea08c39b16de4b76bf74ef89523333f2"
+          ]
+        },
+        "qst_0081": {
+          "question_id": "qst_0081",
+          "gold_ranks": {
+            "dsid_852961d22e0e48b194d7a3f8ccf17173": 1
+          },
+          "first_relevant_rank_at_20": 1,
+          "recall_at_1": 1.0,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank_at_20": 1.0,
+          "hit_at_10": true,
+          "latency_ms": 333.2453,
+          "ranking": [
+            "dsid_852961d22e0e48b194d7a3f8ccf17173",
+            "dsid_80a0d6a8d1574c4fa0b6fa7ec134b499",
+            "dsid_52a4dd2f1b18413ba03153d43f07073e",
+            "dsid_0e0ac7276c864c63a02586fa07ae85e1",
+            "dsid_e0c1e3cec31d45229facd21eee0fe0cc",
+            "dsid_c5a4e3a5f808420588c1533862e9486a",
+            "dsid_91c590c51f12409f9606745f325dc8cf",
+            "dsid_20bb8a225c7548c8990e18e08d6f9548",
+            "dsid_fba2659f2d094b7698175eaaac9fe125",
+            "dsid_330be20dd4224d8dad24eb633121ba06",
+            "dsid_e7359c8e34fb486c9ee7ea4d69f68ded",
+            "dsid_89fccc4d3d324fbfad9a106434adb4d8",
+            "dsid_a133caa07cd84d4c80928528f4124e32",
+            "dsid_f2c9995356f041d68d3232734b6d6ad5",
+            "dsid_91abfa2001d747b3b570e8abce00ef4d",
+            "dsid_aff1dc99f1af408e819833d35da92f0f",
+            "dsid_fe62463afa4f497d94f15c9185129509",
+            "dsid_c53f6d6bcf4a4c9794cbcbcda36f09ba",
+            "dsid_193ab7a97dff4598bcb5690bd6a685e6",
+            "dsid_52b1bf7ae17c474cbdcf671fca80b0ae"
+          ]
+        }
+      }
+    }
+  },
+  "transitions": {
+    "bm25->dense": {
+      "qst_0004": {
+        "source_rank_at_20": 8,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0009": {
+        "source_rank_at_20": null,
+        "target_rank_at_20": 1,
+        "category": "source_miss_target_hit"
+      },
+      "qst_0016": {
+        "source_rank_at_20": 17,
+        "target_rank_at_20": null,
+        "category": "both_miss"
+      },
+      "qst_0019": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0023": {
+        "source_rank_at_20": 6,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0024": {
+        "source_rank_at_20": 5,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0036": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0037": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0039": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 2,
+        "category": "both_hit"
+      },
+      "qst_0045": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0057": {
+        "source_rank_at_20": 16,
+        "target_rank_at_20": null,
+        "category": "both_miss"
+      },
+      "qst_0081": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      }
+    },
+    "bm25->rrf": {
+      "qst_0004": {
+        "source_rank_at_20": 8,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0009": {
+        "source_rank_at_20": null,
+        "target_rank_at_20": 3,
+        "category": "source_miss_target_hit"
+      },
+      "qst_0016": {
+        "source_rank_at_20": 17,
+        "target_rank_at_20": null,
+        "category": "both_miss"
+      },
+      "qst_0019": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0023": {
+        "source_rank_at_20": 6,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0024": {
+        "source_rank_at_20": 5,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0036": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0037": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0039": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0045": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      },
+      "qst_0057": {
+        "source_rank_at_20": 16,
+        "target_rank_at_20": 4,
+        "category": "source_miss_target_hit"
+      },
+      "qst_0081": {
+        "source_rank_at_20": 1,
+        "target_rank_at_20": 1,
+        "category": "both_hit"
+      }
+    }
+  },
+  "transition_summary": {
+    "bm25_miss_to_dense_hit": {
+      "case_ids": [
+        "qst_0009"
+      ],
+      "count": 1
+    },
+    "bm25_hit_to_dense_miss": {
+      "case_ids": [],
+      "count": 0
+    },
+    "bm25_miss_to_rrf_hit": {
+      "case_ids": [
+        "qst_0009",
+        "qst_0057"
+      ],
+      "count": 2
+    },
+    "bm25_hit_to_rrf_miss": {
+      "case_ids": [],
+      "count": 0
+    }
+  },
+  "verdict": "KEEP HYBRID",
+  "complete": true
+}

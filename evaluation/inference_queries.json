@@ -1,0 +1,8 @@
+[
+  {"case_id":"q1","query":"ORA-12516"},
+  {"case_id":"q2","query":"why were buyers unable to finish a purchase?"},
+  {"case_id":"q3","query":"service response got sluggish after the release"},
+  {"case_id":"q4","query":"procedure to restore card authorisation after denial"},
+  {"case_id":"q5","query":"how do services check signed identity credentials?"},
+  {"case_id":"q6","query":"playbook for saturated DB sessions"}
+]
