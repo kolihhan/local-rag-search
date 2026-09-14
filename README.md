@@ -1,68 +1,63 @@
 # Local RAG Search
 
-A local-first **hybrid retrieval engine for RAG applications**. It combines BM25 and Qwen dense retrieval with reciprocal rank fusion, exposes rank provenance, and serves the same `SearchService` through CLI and FastAPI interfaces.
+A small local search service for RAG projects. It combines BM25 with Qwen embeddings and merges the two rankings with reciprocal rank fusion (RRF).
 
-## Key result
+The same `SearchService` is available through a CLI and FastAPI.
 
-Frozen comparison on all **12 Confluence rows** from the EnterpriseRAG-Bench v1.0.0 metadata-extra question set:
+## Results
 
-| Retrieval arm | Recall@10 | MRR@20 | Mean ms |
+I compared BM25, dense retrieval, and RRF on 12 Confluence questions from the EnterpriseRAG-Bench v1.0.0 metadata-extra set.
+
+| Method | Recall@10 | MRR@20 | Mean latency |
 |---|---:|---:|---:|
-| BM25 | 0.7500 | 0.5511 | 60.57 |
-| Qwen Dense | 0.8333 | 0.7917 | 315.18 |
-| BM25 + Dense RRF | **0.9167** | **0.7986** | 372.06 |
+| BM25 | 0.7500 | 0.5511 | 60.57 ms |
+| Qwen Dense | 0.8333 | 0.7917 | 315.18 ms |
+| BM25 + Dense RRF | **0.9167** | **0.7986** | 372.06 ms |
 
-**Verdict: `KEEP HYBRID`.** RRF recovered two BM25 top-10 misses with no BM25 top-10 loss in this frozen subset, but the latency and embedding-cache cost remain material. This is **not** the EnterpriseRAG-Bench core leaderboard benchmark.
+RRF recovered two BM25 top-10 misses in this set, but the dense path was also noticeably slower. I kept hybrid search because it helped on these cases without losing BM25 hits.
 
-## Architecture
+This is a small 12-query subset, not an EnterpriseRAG-Bench leaderboard result.
+
+## How it works
 
 ```text
-Query
-  ↓
-lexical / dense signals
-  ↓
-BM25 + Qwen Dense
-  ↓
-Reciprocal Rank Fusion
-  ↓
-Optional bounded demo rerank
-  ↓
-Context-aware results + stable doc IDs
+query
+  |
+  +--> BM25
+  |
+  +--> Qwen embeddings
+          |
+      merge with RRF
+          |
+        results
 ```
 
-Why hybrid retrieval: exact identifiers, error codes, and names often need lexical search, while paraphrases and conceptual questions benefit from semantic retrieval. RRF merges ranked lists without pretending BM25 and cosine scores live on the same scale.
+BM25 is useful for exact names, IDs, and error codes. Dense retrieval helps more with paraphrases and conceptual matches. RRF combines the rankings without trying to compare BM25 and cosine scores directly.
 
-## What the system exposes
+A few other things in the repo:
 
-- BM25 lexical retrieval and Qwen dense retrieval.
-- Reciprocal rank fusion with per-result rank provenance.
-- Stable document IDs and collection context.
-- Persistent dense-vector cache keyed by model identity, ordered document IDs, corpus identity, and embedding dimension.
-- Shared `SearchService` behind CLI and FastAPI interfaces.
-- Optional bounded reranking for product demonstration; it is excluded from the serious frozen comparison.
+- stable document IDs and collection context
+- persistent embedding cache
+- optional typed query fields (`lex`, `vec`, `hyde`, `intent`)
+- explain mode showing where each result came from
+- CLI and FastAPI on top of the same service
 
-Typed query fields (`lex`, `vec`, `hyde`, `intent`) are supported for explicit experimentation. Search itself works without an LLM; model-based query expansion is optional.
-
-This repository is **inspired by QMD's local retrieval and typed-query ideas**, but it is not a QMD clone; the architecture and evaluation here are intentionally narrower.
+Search works without an LLM. Query expansion is optional.
 
 ## Quickstart
-
-CLI demo:
 
 ```bash
 uv sync
 uv run rag-search --corpus demo_docs query "why were buyers unable to finish a purchase?" --explain
 ```
 
-FastAPI demo:
+FastAPI:
 
 ```bash
 uv run uvicorn local_rag.api:demo_app --reload
 ```
 
-Then open `http://127.0.0.1:8000/docs`.
-
-Use Ollama embeddings when desired:
+With Ollama embeddings:
 
 ```bash
 ollama pull qwen3-embedding:0.6b
@@ -73,70 +68,21 @@ Windows users can use `run-demo.cmd` or `run-api.cmd`.
 
 ## Examples
 
-Exact identifier:
-
 ```bash
 rag-search search "ORA-12516"
-```
-
-Vector-only query:
-
-```bash
 rag-search vsearch "why were buyers unable to finish a purchase?"
+rag-search query "payment incident" --lex "payment authorization" --vec "users could not finish checkout" --explain
 ```
 
-Typed hybrid query:
+The repo also includes a small deterministic 6-query demo test for checking the plumbing. I keep that separate from the 12-query Qwen comparison above.
 
-```bash
-rag-search query "payment incident" \
-  --lex "payment authorization" \
-  --vec "users could not finish checkout" \
-  --hyde "Payment checkout failed because authorization was rejected" \
-  --explain
-```
+More detail on the benchmark setup is in `docs/p2-enterprise-rag-benchmark.md`. The project was partly inspired by QMD's local retrieval and typed-query ideas; `docs/qmd-inspiration.md` explains what I reused and what I changed.
 
-Explain mode shows BM25 rank, dense rank, RRF rank, optional reranker score, matched typed signals, and collection context.
+## Limits
 
-## Evaluation
-
-The serious P2 comparison is frozen to exactly three arms: BM25, real `qwen3-embedding:0.6b` Dense, and BM25 + Dense RRF. Token-overlap reranking, HyDE, generation, agents, and a vector database are not treatments.
-
-See [`docs/p2-enterprise-rag-benchmark.md`](docs/p2-enterprise-rag-benchmark.md) for the frozen protocol, canonical artifact, and final decision.
-
-The repository also ships a **6-query deterministic demo evaluation** mixing exact-identifier and paraphrase cases. It is a product sanity check, not research evidence:
-
-| Demo mode | Recall@10 | MRR@20 |
-|---|---:|---:|
-| BM25 lexical | 83.3% | 70.0% |
-| Demo dense | 100.0% | 70.8% |
-| Hybrid RRF | **100.0%** | **77.4%** |
-
-Run it with:
-
-```bash
-python evaluation/evaluate.py --mode lex
-python evaluation/evaluate.py --mode vec
-python evaluation/evaluate.py --mode hybrid
-```
-
-Evaluation queries and gold document IDs are stored in physically separate files; runtime code never receives gold IDs.
-
-## Design decisions
-
-- **Search works without an LLM.** Explicit typed queries are a reliable baseline; model-based expansion is optional.
-- **Persistent dense cache.** Compatible cache entries are reused; incompatible inputs rebuild and compatible corruption fails closed.
-- **Context-aware documents.** Collection context such as incident/runbook/architecture participates in dense representation and is returned with results.
-- **RRF for fusion.** Raw BM25 and cosine scores are never treated as directly comparable.
-- **Thin interfaces.** CLI and FastAPI wrap the same `SearchService`.
-
-See `docs/architecture.md`, `docs/qmd-inspiration.md`, and `docs/design-decisions.md`.
-
-## Limitations
-
-- The frozen 12-query subset is too small for broad retrieval-quality claims.
-- The shipped deterministic embedding is a demo/test fixture; the serious Dense path is the frozen local Qwen adapter.
-- Auto LLM query expansion is not required for the MVP.
-- Token-overlap reranking is demo-only and is not a recommended serious arm.
+- Twelve questions are too few for broad retrieval-quality claims.
+- The deterministic embedding path is only for demos/tests; the measured dense result uses local `qwen3-embedding:0.6b`.
+- The optional token-overlap reranker is demo-only.
 
 ## Development
 
