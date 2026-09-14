@@ -43,6 +43,8 @@ Why hybrid retrieval: exact identifiers, error codes, and names often need lexic
 
 Typed query fields (`lex`, `vec`, `hyde`, `intent`) are supported for explicit experimentation. Search itself works without an LLM; model-based query expansion is optional.
 
+This repository is **inspired by QMD's local retrieval and typed-query ideas**, but it is not a QMD clone; the architecture and evaluation here are intentionally narrower.
+
 ## Quickstart
 
 CLI demo:
@@ -139,6 +141,6 @@ See `docs/architecture.md`, `docs/qmd-inspiration.md`, and `docs/design-decision
 ## Development
 
 ```bash
-pytest -q
-python -m compileall src evaluation
+python -m pytest -q
+python -m compileall -q src evaluation tests
 ```
