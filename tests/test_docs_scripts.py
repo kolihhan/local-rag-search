@@ -1,15 +1,34 @@
 from pathlib import Path
 
 
-def test_readme_is_portfolio_first_and_reports_tiny_eval_honestly():
+def test_readme_is_portfolio_first_and_reports_eval_scope_honestly():
     root = Path(__file__).parents[1]
     text = (root / "README.md").read_text(encoding="utf-8")
-    headings = ["## The problem", "## How it works", "## Quickstart", "## Example", "## Results", "## Design decisions", "## Limitations"]
+    headings = [
+        "## Key result",
+        "## Architecture",
+        "## What the system exposes",
+        "## Quickstart",
+        "## Examples",
+        "## Evaluation",
+        "## Design decisions",
+        "## Limitations",
+    ]
     positions = [text.index(h) for h in headings]
     assert positions == sorted(positions)
+
+    # Serious frozen comparison is explicit about both result and scope.
+    assert "0.9167" in text and "0.7986" in text
+    assert "12 Confluence rows" in text
+    assert "not" in text.lower() and "core leaderboard benchmark" in text.lower()
+
+    # The deterministic demo remains clearly separated from research evidence.
     assert "83.3%" in text and "77.4%" in text
-    assert "six-query" in text.lower() or "6-query" in text.lower()
-    assert "research benchmark" in text.lower()
+    assert "6-query" in text.lower()
+    assert "product sanity check" in text.lower()
+    assert "not research evidence" in text.lower()
+
+    # Keep provenance transparent.
     assert "inspired by qmd" in text.lower()
     assert "clone" in text.lower()
 
