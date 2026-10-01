@@ -1,48 +1,54 @@
 # Local RAG Search
 
-A small local search service for RAG projects. It combines BM25 with Qwen embeddings and merges the two rankings with reciprocal rank fusion (RRF).
+A local retrieval service for RAG applications. It combines lexical BM25 retrieval with Qwen embeddings and reciprocal rank fusion (RRF), with the same `SearchService` exposed through a CLI and FastAPI.
 
-The same `SearchService` is available through a CLI and FastAPI.
-
-## Results
-
-I compared BM25, dense retrieval, and RRF on 12 Confluence questions from the EnterpriseRAG-Bench v1.0.0 metadata-extra set.
-
-| Method | Recall@10 | MRR@20 | Mean latency |
-|---|---:|---:|---:|
-| BM25 | 0.7500 | 0.5511 | 60.57 ms |
-| Qwen Dense | 0.8333 | 0.7917 | 315.18 ms |
-| BM25 + Dense RRF | **0.9167** | **0.7986** | 372.06 ms |
-
-RRF recovered two BM25 top-10 misses in this set, but the dense path was also noticeably slower. I kept hybrid search because it helped on these cases without losing BM25 hits.
-
-This is a small 12-query subset, not an EnterpriseRAG-Bench leaderboard result.
-
-## How it works
+## What it does
 
 ```text
 query
   |
   +--> BM25
   |
-  +--> Qwen embeddings
+  +--> Qwen dense retrieval
           |
       merge with RRF
           |
         results
 ```
 
-BM25 is useful for exact names, IDs, and error codes. Dense retrieval helps more with paraphrases and conceptual matches. RRF combines the rankings without trying to compare BM25 and cosine scores directly.
+BM25 helps with exact names, IDs, and error codes. Dense retrieval helps with paraphrases and conceptual matches. RRF combines the rankings without trying to compare BM25 and vector-similarity scores directly.
 
-A few other things in the repo:
+## Frozen evaluation
+
+The current resume-facing benchmark is the frozen **EnterpriseRAG-Bench v1.0.0 core** run, not the older 12-query exploratory result that used to headline this README.
+
+Benchmark scope:
+
+- **64 official Confluence-only, qrel-compatible queries**
+- **5,189 documents**
+- BM25, Qwen dense retrieval, and RRF evaluated under one frozen corpus/query contract
+- Recall@K, MRR@20, Hit@10, latency, and per-query rankings recorded in the run artifact
+- local `qwen3-embedding:0.6b` embeddings with persistent cache
+
+Source of truth: [`runs/enterprise-rag-qwen-core-v1/report.json`](runs/enterprise-rag-qwen-core-v1/report.json).
+
+The report includes the benchmark release/revision, corpus identity, selected question IDs, model identity, configuration, per-arm aggregate metrics, and per-query rankings. This makes the retrieval comparison reproducible and lets regressions be inspected query by query instead of relying on one headline score.
+
+### Why the README changed
+
+An earlier version of this README highlighted a **12-query exploratory subset**. That run was useful while building the pipeline, but the repository now contains the larger frozen 64-query core evaluation above. The resume and README therefore point to the same evidence.
+
+## Service features
 
 - stable document IDs and collection context
+- BM25 and local dense retrieval
+- RRF fusion
 - persistent embedding cache
 - optional typed query fields (`lex`, `vec`, `hyde`, `intent`)
 - explain mode showing where each result came from
-- CLI and FastAPI on top of the same service
+- shared CLI and FastAPI service layer
 
-Search works without an LLM. Query expansion is optional.
+Search itself works without a generation LLM. Query expansion is optional.
 
 ## Quickstart
 
@@ -64,25 +70,11 @@ ollama pull qwen3-embedding:0.6b
 uv run rag-search --embedding ollama --corpus demo_docs query "payment failure"
 ```
 
-Windows users can use `run-demo.cmd` or `run-api.cmd`.
-
-## Examples
-
-```bash
-rag-search search "ORA-12516"
-rag-search vsearch "why were buyers unable to finish a purchase?"
-rag-search query "payment incident" --lex "payment authorization" --vec "users could not finish checkout" --explain
-```
-
-The repo also includes a small deterministic 6-query demo test for checking the plumbing. I keep that separate from the 12-query Qwen comparison above.
-
-More detail on the benchmark setup is in `docs/p2-enterprise-rag-benchmark.md`. The project was partly inspired by QMD's local retrieval and typed-query ideas; `docs/qmd-inspiration.md` explains what I reused and what I changed.
-
 ## Limits
 
-- Twelve questions are too few for broad retrieval-quality claims.
-- The deterministic embedding path is only for demos/tests; the measured dense result uses local `qwen3-embedding:0.6b`.
-- The optional token-overlap reranker is demo-only.
+- The frozen benchmark is a 64-query Confluence-only slice of EnterpriseRAG-Bench, not a leaderboard claim over the entire benchmark.
+- Results are specific to the frozen corpus, query contract, and local embedding configuration recorded in the artifact.
+- Retrieval metrics measure ranking quality; they do not by themselves prove end-to-end answer quality.
 
 ## Development
 
