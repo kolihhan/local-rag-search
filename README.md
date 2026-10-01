@@ -13,7 +13,7 @@
 </p>
 
 > [!NOTE]
-> This project keeps retrieval visible. You can inspect **why a result ranked where it did** without hiding the search behavior behind a chatbot.
+> This project keeps retrieval visible. You can inspect **why a result ranked where it did** without hiding search behavior behind a chatbot.
 
 ## Demo
 
@@ -33,9 +33,7 @@ query
                                + final RRF rank
 ```
 
-The browser demo shows the result snippet together with the lexical, dense, and fused rank provenance.
-
-## Measured result
+## Key result
 
 Frozen evaluation on **64 official Confluence-compatible queries** from EnterpriseRAG-Bench v1.0.0 over **5,189 documents**:
 
@@ -61,14 +59,16 @@ flowchart LR
     R --> E[Explain rank provenance]
 ```
 
-## Engineering choices
+## What the system exposes
 
-- **BM25 + dense retrieval** so exact identifiers and semantic paraphrases can both surface.
-- **RRF instead of raw-score mixing** because BM25 and vector scores are not directly comparable.
-- **Visible provenance** so the demo exposes where each result came from.
-- **Persistent embedding cache** for repeatable local runs without rebuilding unchanged vectors.
-- **One `SearchService`** behind browser demo, CLI, and FastAPI.
-- **Evaluation separated from runtime inputs**; gold IDs never enter search execution.
+- BM25 lexical retrieval and local Qwen dense retrieval.
+- Reciprocal rank fusion with per-result BM25, Dense, and final RRF rank provenance.
+- Stable document IDs and collection context.
+- Persistent embedding cache.
+- Optional typed query fields: `lex`, `vec`, `hyde`, `intent`.
+- One shared `SearchService` behind browser demo, CLI, and FastAPI.
+
+The repository is **inspired by QMD's local retrieval and typed-query ideas**, but it is not a QMD clone; the implementation and evaluation here are intentionally narrower.
 
 ## Quickstart
 
@@ -93,9 +93,9 @@ uv run rag-search --embedding ollama --corpus demo_docs query "payment failure"
 
 Windows users can run `run-demo.cmd` or `run-api.cmd`.
 
-## Explain mode
+## Examples
 
-A hybrid query can expose the signals used for ranking:
+Typed hybrid query with explain mode:
 
 ```bash
 rag-search query "payment incident" \
@@ -107,14 +107,30 @@ rag-search query "payment incident" \
 
 Explain mode shows BM25 rank, Dense rank, final RRF rank, optional reranker score, typed signals, and collection context.
 
-## Evaluation note
+## Evaluation
 
 > [!IMPORTANT]
-> The resume-facing run is a **64-query Confluence slice**, not the full EnterpriseRAG-Bench leaderboard benchmark. Retrieval metrics measure ranking quality, not generated-answer quality.
+> The resume-facing run is a **64-query Confluence slice**, **not the full EnterpriseRAG-Bench leaderboard benchmark**. Retrieval metrics measure ranking quality, not generated-answer quality.
 
-The repository also includes a small deterministic 6-query demo evaluation for local sanity checks; it is product validation, not research evidence.
+The repository also includes a **6-query deterministic demo evaluation** for local product checks:
 
-## Limits
+| Demo mode | Recall@10 | MRR@20 |
+|---|---:|---:|
+| BM25 lexical | 83.3% | 70.0% |
+| Demo dense | 100.0% | 70.8% |
+| Hybrid RRF | **100.0%** | **77.4%** |
+
+That 6-query run is a **product sanity check**, **not research evidence**. Evaluation queries and gold document IDs stay outside runtime search inputs.
+
+## Design decisions
+
+- **BM25 + dense retrieval** so exact identifiers and semantic paraphrases can both surface.
+- **RRF instead of raw-score mixing** because BM25 and vector scores are not directly comparable.
+- **Visible provenance** so the demo exposes where each result came from.
+- **Persistent embedding cache** for repeatable local runs without rebuilding unchanged vectors.
+- **Thin interfaces**: browser demo, CLI, and FastAPI all wrap the same `SearchService`.
+
+## Limitations
 
 - The frozen evaluation is Confluence-only.
 - Dense retrieval adds embedding/index cost that BM25 avoids.
