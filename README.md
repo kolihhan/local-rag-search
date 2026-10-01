@@ -13,10 +13,10 @@
 </p>
 
 <p align="center">
-  <a href="#try-it-in-2-minutes">Try it</a> ·
-  <a href="#measured-result">Measured result</a> ·
-  <a href="#how-it-works">Architecture</a> ·
-  <a href="#why-this-project">Why this project</a>
+  <a href="#key-result">Key result</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#evaluation">Evaluation</a>
 </p>
 
 ## At a glance
@@ -31,22 +31,21 @@
 > [!NOTE]
 > Every result can show its **BM25 rank, Dense rank, and final RRF rank**, so it is possible to inspect why fusion helped or hurt.
 
-## Try it in 2 minutes
+## Key result
 
-```bash
-uv sync
-uv run uvicorn local_rag.api:demo_app --reload
-```
+Frozen evaluation on **64 official Confluence-compatible queries** from EnterpriseRAG-Bench v1.0.0 over **5,189 documents**:
 
-Open **http://127.0.0.1:8000** and search the bundled corpus.
+| Retrieval arm | Recall@10 | MRR@20 | Hit@10 |
+|---|---:|---:|---:|
+| BM25 | 0.7341 | 0.6792 | 0.7969 |
+| Qwen Dense | 0.6797 | 0.6919 | 0.7656 |
+| **BM25 + Dense RRF** | **0.7630** | **0.7418** | **0.8438** |
 
-Or from the CLI:
+In this frozen slice, RRF recovered **5 BM25 top-10 misses** while losing 2 BM25 top-10 hits. That supports hybrid retrieval here; it is not a claim that fusion is universally better.
 
-```bash
-uv run rag-search --corpus demo_docs query "why were buyers unable to finish a purchase?" --explain
-```
+Source of truth: [`runs/enterprise-rag-qwen-core-v1/report.json`](runs/enterprise-rag-qwen-core-v1/report.json).
 
-## How it works
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -69,24 +68,7 @@ query
 
 The repository keeps one shared `SearchService` behind the browser demo, CLI, and FastAPI surface.
 
-## Measured result
-
-Frozen evaluation on **64 official Confluence-compatible queries** from EnterpriseRAG-Bench v1.0.0 over **5,189 documents**:
-
-| Retrieval arm | Recall@10 | MRR@20 | Hit@10 |
-|---|---:|---:|---:|
-| BM25 | 0.7341 | 0.6792 | 0.7969 |
-| Qwen Dense | 0.6797 | 0.6919 | 0.7656 |
-| **BM25 + Dense RRF** | **0.7630** | **0.7418** | **0.8438** |
-
-In this frozen slice, RRF recovered **5 BM25 top-10 misses** while losing 2 BM25 top-10 hits. That supports hybrid retrieval here; it is not a claim that fusion is universally better.
-
-Source of truth: [`runs/enterprise-rag-qwen-core-v1/report.json`](runs/enterprise-rag-qwen-core-v1/report.json).
-
-> [!IMPORTANT]
-> This is a **64-query Confluence slice**, not the full EnterpriseRAG-Bench leaderboard benchmark. These are retrieval metrics, not generated-answer metrics.
-
-## What you can inspect
+## What the system exposes
 
 - **Lexical vs semantic retrieval** — compare BM25 and local Qwen dense behavior on the same query.
 - **Fusion provenance** — inspect BM25 rank, Dense rank, and final RRF rank per result.
@@ -95,27 +77,39 @@ Source of truth: [`runs/enterprise-rag-qwen-core-v1/report.json`](runs/enterpris
 - **Typed query signals** — optionally provide `lex`, `vec`, `hyde`, and `intent` fields.
 - **One service boundary** — browser demo, CLI, and FastAPI all use the same retrieval implementation.
 
-## Why this project
+### Why this project
 
-A RAG system can look good in a chat UI while the retriever underneath is weak or impossible to debug. This project isolates retrieval as its own engineering problem:
+A RAG system can look good in a chat UI while the retriever underneath is weak or impossible to debug. This project isolates retrieval as its own engineering problem: compare lexical and dense search, fuse rankings without mixing incompatible raw scores, measure the result on a frozen query set, and expose enough provenance to explain individual ranking changes.
 
-1. compare lexical and dense search on the same corpus;
-2. fuse rankings without mixing incompatible raw scores;
-3. measure the result on a frozen query set;
-4. expose enough provenance to explain individual ranking changes.
+The repository is **inspired by QMD's local retrieval and typed-query ideas**, but it is **not a QMD clone**; the implementation and evaluation are intentionally narrower.
 
-The repository is **inspired by QMD's local retrieval and typed-query ideas**, but it is intentionally narrower and independently implemented.
+## Quickstart
 
-## More examples
+```bash
+uv sync
+uv run uvicorn local_rag.api:demo_app --reload
+```
 
-### Local Qwen embeddings
+Open **http://127.0.0.1:8000** and search the bundled corpus.
+
+Or from the CLI:
+
+```bash
+uv run rag-search --corpus demo_docs query "why were buyers unable to finish a purchase?" --explain
+```
+
+For local Qwen embeddings:
 
 ```bash
 ollama pull qwen3-embedding:0.6b
 uv run rag-search --embedding ollama --corpus demo_docs query "payment failure"
 ```
 
-### Typed hybrid query
+Windows users can run `run-demo.cmd` or `run-api.cmd`.
+
+## Examples
+
+Typed hybrid query with explain mode:
 
 ```bash
 rag-search query "payment incident" \
@@ -125,9 +119,12 @@ rag-search query "payment incident" \
   --explain
 ```
 
-Windows users can run `run-demo.cmd` or `run-api.cmd`.
+Explain mode shows BM25 rank, Dense rank, final RRF rank, optional reranker score, typed signals, and collection context.
 
-## Product sanity check
+## Evaluation
+
+> [!IMPORTANT]
+> The resume-facing run is a **64-query Confluence slice**, **not the full EnterpriseRAG-Bench leaderboard benchmark**. Retrieval metrics measure ranking quality, not generated-answer quality.
 
 The repository also includes a **6-query deterministic demo evaluation** for local product checks:
 
@@ -137,9 +134,9 @@ The repository also includes a **6-query deterministic demo evaluation** for loc
 | Demo dense | 100.0% | 70.8% |
 | Hybrid RRF | **100.0%** | **77.4%** |
 
-That six-query run is a product sanity check, not research evidence. Evaluation queries and gold document IDs stay outside runtime search inputs.
+That 6-query run is a **product sanity check**, **not research evidence**. Evaluation queries and gold document IDs stay outside runtime search inputs.
 
-## Engineering decisions
+## Design decisions
 
 - **BM25 + dense retrieval** so exact identifiers and semantic paraphrases can both surface.
 - **RRF instead of raw-score mixing** because BM25 and vector scores are not directly comparable.
