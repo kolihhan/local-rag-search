@@ -39,6 +39,17 @@ def test_fastapi_search_query_and_document_primitives(tmp_path):
     assert "checkout" in doc.json()["text"].lower()
 
 
+def test_portfolio_demo_page_exposes_hybrid_search_story(tmp_path):
+    client = TestClient(create_app(default_corpus=CORPUS, cache_dir=tmp_path))
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Local RAG Search" in response.text
+    assert "BM25" in response.text
+    assert "Dense" in response.text
+    assert "RRF" in response.text
+    assert "/search" in response.text
+
+
 def test_cli_vsearch_is_vec_only_sugar_and_query_explain(tmp_path, capsys):
     code = main(["--corpus", str(CORPUS), "--cache-dir", str(tmp_path), "vsearch", "users cannot finish checkout"])
     out = capsys.readouterr().out
