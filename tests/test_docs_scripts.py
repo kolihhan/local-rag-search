@@ -17,10 +17,11 @@ def test_readme_is_portfolio_first_and_reports_eval_scope_honestly():
     positions = [text.index(h) for h in headings]
     assert positions == sorted(positions)
 
-    # Serious frozen comparison is explicit about both result and scope.
-    assert "0.9167" in text and "0.7986" in text
-    assert "12 Confluence rows" in text
-    assert "not" in text.lower() and "core leaderboard benchmark" in text.lower()
+    # Resume-facing frozen comparison stays explicit about result and scope.
+    assert "64 official Confluence-compatible queries" in text
+    assert "5,189 documents" in text
+    assert "0.7630" in text and "0.7418" in text
+    assert "not the full EnterpriseRAG-Bench leaderboard benchmark" in text
 
     # The deterministic demo remains clearly separated from research evidence.
     assert "83.3%" in text and "77.4%" in text
