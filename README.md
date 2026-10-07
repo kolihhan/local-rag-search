@@ -92,6 +92,9 @@ uv run uvicorn local_rag.api:demo_app --reload
 
 Open **http://127.0.0.1:8000** and search the bundled corpus.
 
+> [!NOTE]
+> The bundled browser demo uses the deterministic lightweight `simple` embedding provider so it starts without Ollama. The measured benchmark path uses `qwen3-embedding:0.6b`; demo output should not be mistaken for the Qwen benchmark treatment.
+
 Or from the CLI:
 
 ```bash
@@ -119,7 +122,7 @@ rag-search query "payment incident" \
   --explain
 ```
 
-Explain mode shows BM25 rank, Dense rank, final RRF rank, optional reranker score, typed signals, and collection context.
+Explain mode shows BM25 rank, Dense rank, final RRF rank, optional reranker score, typed signals, and collection context. The FastAPI routes expose those provenance fields only when `explain: true`; retrieval itself always computes the same rankings.
 
 ## Evaluation
 
@@ -148,7 +151,7 @@ That 6-query run is a **product sanity check**, **not research evidence**. Evalu
 
 - The frozen evaluation is Confluence-only.
 - Dense retrieval adds embedding/index cost that BM25 avoids.
-- The browser demo uses a small bundled corpus rather than the benchmark dataset.
+- The browser demo uses a small bundled corpus and lightweight embedding fixture rather than the benchmark dataset/model path.
 - Retrieval quality does not imply end-to-end answer quality.
 
 More detail: [`docs/architecture.md`](docs/architecture.md) · [`docs/design-decisions.md`](docs/design-decisions.md) · [`docs/qmd-inspiration.md`](docs/qmd-inspiration.md)
