@@ -74,6 +74,7 @@ class SearchService:
         mode: str = "hybrid",
         limit: int = 10,
         rerank: bool = False,
+        explain: bool = False,
     ) -> list[SearchResult]:
         if mode == "lex":
             plan = QueryPlan.lexical(query)
@@ -83,7 +84,7 @@ class SearchService:
             plan = QueryPlan.hybrid(query)
         else:
             raise ValueError(f"unknown search mode: {mode}")
-        return self.query(plan, limit=limit, rerank=rerank)
+        return self.query(plan, limit=limit, rerank=rerank, explain=explain)
 
     def query(
         self,
@@ -91,7 +92,11 @@ class SearchService:
         *,
         limit: int = 10,
         rerank: bool = False,
+        explain: bool = False,
     ) -> list[SearchResult]:
+        # Backward-compatible no-op: provenance is always computed. Presentation
+        # layers decide whether to expose it.
+        _ = explain
         candidate_limit = max(limit, self.rerank_pool if rerank else limit * 3)
         rankings: dict[str, list[tuple[str, float]]] = {}
 
