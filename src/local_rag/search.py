@@ -94,6 +94,9 @@ class SearchService:
         rerank: bool = False,
         explain: bool = False,
     ) -> list[SearchResult]:
+        # Backward-compatible no-op: provenance is always computed. Presentation
+        # layers decide whether to expose it.
+        _ = explain
         candidate_limit = max(limit, self.rerank_pool if rerank else limit * 3)
         rankings: dict[str, list[tuple[str, float]]] = {}
 
@@ -106,7 +109,6 @@ class SearchService:
                 rankings[source] = [(hit.doc_id, hit.score) for hit in self.dense.search(query, limit=candidate_limit)]
 
         if not rankings:
-            # Explicit empty typed plan remains useful: fall back to original as hybrid.
             rankings["lex"] = [(hit.doc_id, hit.score) for hit in self.bm25.search(plan.original, limit=candidate_limit)]
             rankings["vec"] = [(hit.doc_id, hit.score) for hit in self.dense.search(plan.original, limit=candidate_limit)]
 

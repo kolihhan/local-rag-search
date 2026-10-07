@@ -1,5 +1,8 @@
 # P2 EnterpriseRAG metadata-extra Confluence evaluation
 
+> [!NOTE]
+> **Historical development evidence.** This document records the earlier frozen 12-query metadata-extra Confluence experiment. The current canonical portfolio result is the 64-query core-compatible run in `runs/enterprise-rag-qwen-core-v1/report.json` (RRF Recall@10 `0.7630`, MRR@20 `0.7418`, Hit@10 `0.8438`). The experiment below is preserved because it explains the original decision to keep hybrid retrieval; it is not the current headline benchmark.
+
 ## Frozen question
 
 Does real semantic or hybrid retrieval earn its complexity over the existing
@@ -58,7 +61,7 @@ digest before cache reuse or inference, and writes the report atomically.
 
 ## Result
 
-The single canonical run completed successfully. No real Dense retrieval result
+The single historical run completed successfully. No real Dense retrieval result
 was used to choose the cases, model contract, batching, cutoffs, or verdict
 rule.
 
@@ -77,9 +80,9 @@ Paired top-10 transitions against BM25:
 
 Dense and RRF both earned existence over BM25 under the frozen rule. RRF also
 improved Recall@10 and MRR@20 over Dense without a top-10 regression, so the
-frozen verdict is **KEEP HYBRID**.
+historical frozen verdict was **KEEP HYBRID**.
 
-Canonical artifacts:
+Historical artifacts:
 
 - `runs/enterprise-rag-qwen-dev-v1/report.json`: 62,269 bytes, SHA-256
   `c9a5772e64e95f1c929ce4a79d9cdb4173cf908fe9654dfec5350320bdfc15ff`.
@@ -99,13 +102,13 @@ The hybrid gain is only one top-10 case over Dense and two over BM25 on a
 112.7 MB JSON cache. The MRR@20 gain over Dense was only 0.0069. A
 latency-sensitive deployment or a broader lexical workload could still prefer
 BM25, and this run provides no evidence for paraphrase, multi-gold, or
-non-Confluence tasks. `KEEP HYBRID` therefore means retain the measured serious
-path, not make a universal quality claim or remove the cheap BM25-only option.
+non-Confluence tasks. `KEEP HYBRID` therefore meant retain the measured path,
+not make a universal quality claim or remove the cheap BM25-only option.
 
 ## Frozen verdict rule
 
 Recall@10 is primary and MRR@20 secondary. A more complex arm must have no
 top-10 regression, be no worse on either metric, and be strictly better on at
 least one. Exact ties favor simplicity; conflicting or incomplete evidence is
-`INSUFFICIENT`. Valid verdicts are `KEEP BM25`, `KEEP DENSE`, `KEEP HYBRID`, and
+`INSUFFICIENT`. Valid verdicts were `KEEP BM25`, `KEEP DENSE`, `KEEP HYBRID`, and
 `INSUFFICIENT`.

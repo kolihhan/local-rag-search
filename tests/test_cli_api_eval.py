@@ -39,6 +39,37 @@ def test_fastapi_search_query_and_document_primitives(tmp_path):
     assert "checkout" in doc.json()["text"].lower()
 
 
+def test_fastapi_rejects_unknown_mode_and_embedding_at_validation_boundary(tmp_path):
+    client = TestClient(create_app(default_corpus=CORPUS, cache_dir=tmp_path))
+
+    bad_mode = client.post("/search", json={"query": "payment", "mode": "hybird"})
+    assert bad_mode.status_code == 422
+
+    bad_embedding = client.post("/index", json={"path": str(CORPUS), "embedding": "simpel"})
+    assert bad_embedding.status_code == 422
+
+
+def test_fastapi_explain_flag_controls_provenance_fields(tmp_path):
+    client = TestClient(create_app(default_corpus=CORPUS, cache_dir=tmp_path))
+
+    compact = client.post("/search", json={"query": "ORA-12516", "mode": "lex", "limit": 1, "explain": False})
+    assert compact.status_code == 200
+    compact_row = compact.json()["results"][0]
+    assert "bm25_rank" not in compact_row
+    assert "dense_rank" not in compact_row
+    assert "rrf_rank" not in compact_row
+    assert "reranker_score" not in compact_row
+    assert "matched_signals" not in compact_row
+
+    explained = client.post("/search", json={"query": "ORA-12516", "mode": "lex", "limit": 1, "explain": True})
+    assert explained.status_code == 200
+    explained_row = explained.json()["results"][0]
+    assert explained_row["bm25_rank"] == 1
+    assert "dense_rank" in explained_row
+    assert "rrf_rank" in explained_row
+    assert "matched_signals" in explained_row
+
+
 def test_portfolio_demo_page_exposes_hybrid_search_story(tmp_path):
     client = TestClient(create_app(default_corpus=CORPUS, cache_dir=tmp_path))
     response = client.get("/")
