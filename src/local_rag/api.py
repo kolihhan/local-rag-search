@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -13,12 +14,12 @@ from .query import QueryPlan
 
 class IndexRequest(BaseModel):
     path: str
-    embedding: str = "simple"
+    embedding: Literal["simple", "ollama"] = "simple"
 
 
 class SearchRequest(BaseModel):
     query: str
-    mode: str = "hybrid"
+    mode: Literal["lex", "vec", "hybrid"] = "hybrid"
     limit: int = Field(default=10, ge=1, le=100)
     rerank: bool = False
     explain: bool = False
@@ -112,7 +113,7 @@ DEMO_HTML = """<!doctype html>
     try {
       const response = await fetch('/search', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify({query, mode: 'hybrid', limit: 5, explain: true})
       });
       if (!response.ok) throw new Error((await response.json()).detail || 'Search failed');

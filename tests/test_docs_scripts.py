@@ -18,7 +18,7 @@ def test_readme_is_portfolio_first_and_reports_eval_scope_honestly():
     assert positions == sorted(positions)
 
     # Resume-facing frozen comparison stays explicit about result and scope.
-    assert "64 official Confluence-compatible queries" in text
+    assert "64 Confluence-only, qrel-compatible core queries" in text
     assert "5,189 documents" in text
     assert "0.7630" in text and "0.7418" in text
     assert "not the full EnterpriseRAG-Bench leaderboard benchmark" in text
