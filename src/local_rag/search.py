@@ -74,7 +74,6 @@ class SearchService:
         mode: str = "hybrid",
         limit: int = 10,
         rerank: bool = False,
-        explain: bool = False,
     ) -> list[SearchResult]:
         if mode == "lex":
             plan = QueryPlan.lexical(query)
@@ -84,7 +83,7 @@ class SearchService:
             plan = QueryPlan.hybrid(query)
         else:
             raise ValueError(f"unknown search mode: {mode}")
-        return self.query(plan, limit=limit, rerank=rerank, explain=explain)
+        return self.query(plan, limit=limit, rerank=rerank)
 
     def query(
         self,
@@ -92,7 +91,6 @@ class SearchService:
         *,
         limit: int = 10,
         rerank: bool = False,
-        explain: bool = False,
     ) -> list[SearchResult]:
         candidate_limit = max(limit, self.rerank_pool if rerank else limit * 3)
         rankings: dict[str, list[tuple[str, float]]] = {}
@@ -106,7 +104,6 @@ class SearchService:
                 rankings[source] = [(hit.doc_id, hit.score) for hit in self.dense.search(query, limit=candidate_limit)]
 
         if not rankings:
-            # Explicit empty typed plan remains useful: fall back to original as hybrid.
             rankings["lex"] = [(hit.doc_id, hit.score) for hit in self.bm25.search(plan.original, limit=candidate_limit)]
             rankings["vec"] = [(hit.doc_id, hit.score) for hit in self.dense.search(plan.original, limit=candidate_limit)]
 
