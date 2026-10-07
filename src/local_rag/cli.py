@@ -56,11 +56,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"# {doc.title}\n\n{doc.text}")
         return 0
     if args.command == "vsearch":
-        results = service.search(args.query, mode="vec", limit=args.limit, rerank=args.rerank, explain=args.explain)
+        results = service.search(args.query, mode="vec", limit=args.limit, rerank=args.rerank)
         _print_results(results, mode="vec", explain=args.explain)
         return 0
     if args.command == "search":
-        results = service.search(args.query, mode="lex", limit=args.limit, rerank=args.rerank, explain=args.explain)
+        results = service.search(args.query, mode="lex", limit=args.limit, rerank=args.rerank)
         _print_results(results, mode="lex", explain=args.explain)
         return 0
 
@@ -68,7 +68,7 @@ def main(argv: list[str] | None = None) -> int:
         plan = QueryPlan(args.query, args.intent, tuple(args.lex), tuple(args.vec), tuple(args.hyde))
     else:
         plan = QueryPlan.hybrid(args.query)
-    results = service.query(plan, limit=args.limit, rerank=args.rerank, explain=args.explain)
+    results = service.query(plan, limit=args.limit, rerank=args.rerank)
     _print_results(results, mode="typed/hybrid", explain=args.explain)
     return 0
 
