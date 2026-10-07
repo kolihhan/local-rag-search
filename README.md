@@ -29,11 +29,11 @@
 | **Design focus** | Retrieval quality that is measurable and explainable — not hidden behind a chatbot. |
 
 > [!NOTE]
-> Every result can show its **BM25 rank, Dense rank, and final RRF rank**, so it is possible to inspect why fusion helped or hurt.
+> Every result carries its **BM25 rank, Dense rank, and final RRF rank**, so it is possible to inspect why fusion helped or hurt.
 
 ## Key result
 
-Frozen evaluation on **64 official Confluence-compatible queries** from EnterpriseRAG-Bench v1.0.0 over **5,189 documents**:
+Frozen evaluation on **64 Confluence-only, qrel-compatible core queries** from EnterpriseRAG-Bench v1.0.0 over **5,189 documents**:
 
 | Retrieval arm | Recall@10 | MRR@20 | Hit@10 |
 |---|---:|---:|---:|
@@ -92,6 +92,9 @@ uv run uvicorn local_rag.api:demo_app --reload
 
 Open **http://127.0.0.1:8000** and search the bundled corpus.
 
+> [!NOTE]
+> The bundled browser demo intentionally uses the deterministic lightweight `SimpleEmbeddingProvider`, so it works without Ollama. The measured serious benchmark path uses Qwen3-Embedding-0.6B through Ollama. The demo is a product sanity surface, not the source of the Qwen benchmark numbers.
+
 Or from the CLI:
 
 ```bash
@@ -119,7 +122,7 @@ rag-search query "payment incident" \
   --explain
 ```
 
-Explain mode shows BM25 rank, Dense rank, final RRF rank, optional reranker score, typed signals, and collection context.
+The CLI `--explain` option controls presentation of rank details. At the service/API layer, provenance fields are part of the stable `SearchResult` contract and are returned regardless; the current `explain` request flag is retained for interface compatibility rather than changing retrieval math or response shape.
 
 ## Evaluation
 
@@ -136,6 +139,8 @@ The repository also includes a **6-query deterministic demo evaluation** for loc
 
 That 6-query run is a **product sanity check**, **not research evidence**. Evaluation queries and gold document IDs stay outside runtime search inputs.
 
+The older 12-query metadata-extra Qwen experiment remains in the repository as historical development evidence. It is no longer the canonical source for portfolio metrics; see `docs/p2-enterprise-rag-benchmark.md`.
+
 ## Design decisions
 
 - **BM25 + dense retrieval** so exact identifiers and semantic paraphrases can both surface.
@@ -148,7 +153,8 @@ That 6-query run is a **product sanity check**, **not research evidence**. Evalu
 
 - The frozen evaluation is Confluence-only.
 - Dense retrieval adds embedding/index cost that BM25 avoids.
-- The browser demo uses a small bundled corpus rather than the benchmark dataset.
+- On the measured local 64-query run, hybrid query latency was materially higher than BM25; the quality/latency trade-off should be treated as environment-specific rather than a universal deployment number.
+- The browser demo uses a small bundled corpus and lightweight embedding fixture rather than the benchmark dataset/model path.
 - Retrieval quality does not imply end-to-end answer quality.
 
 More detail: [`docs/architecture.md`](docs/architecture.md) · [`docs/design-decisions.md`](docs/design-decisions.md) · [`docs/qmd-inspiration.md`](docs/qmd-inspiration.md)
