@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -13,12 +14,12 @@ from .query import QueryPlan
 
 class IndexRequest(BaseModel):
     path: str
-    embedding: str = "simple"
+    embedding: Literal["simple", "ollama"] = "simple"
 
 
 class SearchRequest(BaseModel):
     query: str
-    mode: str = "hybrid"
+    mode: Literal["lex", "vec", "hybrid"] = "hybrid"
     limit: int = Field(default=10, ge=1, le=100)
     rerank: bool = False
     explain: bool = False
@@ -37,6 +38,20 @@ class TypedQueryRequest(BaseModel):
 
 class BatchRequest(BaseModel):
     doc_ids: list[str]
+
+
+_EXPLAIN_FIELDS = {"bm25_rank", "dense_rank", "rrf_rank", "reranker_score", "matched_signals"}
+
+
+def _serialize_results(results, *, explain: bool) -> list[dict]:
+    payload = []
+    for row in results:
+        item = asdict(row)
+        if not explain:
+            for field in _EXPLAIN_FIELDS:
+                item.pop(field, None)
+        payload.append(item)
+    return payload
 
 
 DEMO_HTML = """<!doctype html>
@@ -170,14 +185,14 @@ def create_app(*, default_corpus: str | Path | None = None, cache_dir: str | Pat
 
     @app.post("/search")
     def search(request: SearchRequest):
-        results = service().search(request.query, mode=request.mode, limit=request.limit, rerank=request.rerank, explain=request.explain)
-        return {"results": [asdict(row) for row in results]}
+        results = service().search(request.query, mode=request.mode, limit=request.limit, rerank=request.rerank)
+        return {"results": _serialize_results(results, explain=request.explain)}
 
     @app.post("/query")
     def typed_query(request: TypedQueryRequest):
         plan = QueryPlan(request.original, request.intent, tuple(request.lex), tuple(request.vec), tuple(request.hyde))
-        results = service().query(plan, limit=request.limit, rerank=request.rerank, explain=request.explain)
-        return {"results": [asdict(row) for row in results]}
+        results = service().query(plan, limit=request.limit, rerank=request.rerank)
+        return {"results": _serialize_results(results, explain=request.explain)}
 
     @app.get("/documents/{doc_id}")
     def get_document(doc_id: str):
