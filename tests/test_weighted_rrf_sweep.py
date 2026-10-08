@@ -1,4 +1,6 @@
-from evaluation.weighted_rrf_sweep import score_weighted_rrf_report
+from pathlib import Path
+
+from evaluation.weighted_rrf_sweep import score_weighted_rrf_report, sweep_report
 
 
 def test_score_weighted_rrf_report_tracks_rescues_and_regressions():
@@ -22,3 +24,8 @@ def test_score_weighted_rrf_report_tracks_rescues_and_regressions():
     assert scored["bm25_miss_to_weighted_hit"] == 1
     assert scored["bm25_hit_to_weighted_miss"] == 0
     assert scored["hit_at_2"] == 1.0
+
+
+def test_diagnostic_surface_frozen_weight_sweep():
+    rows = sweep_report(Path("runs/enterprise-rag-qwen-core-v1/report.json"))
+    raise AssertionError(rows)
