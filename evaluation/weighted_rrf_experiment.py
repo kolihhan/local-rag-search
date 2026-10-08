@@ -51,9 +51,9 @@ def score_weighted_rankings(
         reciprocal_ranks.append(reciprocal_rank)
         hits.append(hit)
         per_query[question_id] = {
-            "recall_at_10": recall,
+            f"recall_at_{cutoff}": recall,
             "reciprocal_rank_at_20": reciprocal_rank,
-            "hit_at_10": hit,
+            f"hit_at_{cutoff}": hit,
             "first_relevant_rank_at_20": min(positions) if positions else None,
             "ranking": ranked[:20],
         }
@@ -64,9 +64,9 @@ def score_weighted_rankings(
         "bm25_weight": bm25_weight,
         "dense_weight": dense_weight,
         "rrf_k": k,
-        "recall_at_10": sum(recalls) / count,
+        f"recall_at_{cutoff}": sum(recalls) / count,
         "mrr_at_20": sum(reciprocal_ranks) / count,
-        "hit_at_10": sum(hits) / count,
+        f"hit_at_{cutoff}": sum(hits) / count,
         "bm25_miss_to_weighted_hit": len(rescues),
         "bm25_hit_to_weighted_miss": len(regressions),
         "rescued_case_ids": rescues,
