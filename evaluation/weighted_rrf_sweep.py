@@ -62,3 +62,8 @@ def sweep_report(path: str | Path) -> list[dict]:
         )
         rows.append({"bm25_weight": bm25_weight, "dense_weight": 1.0, **scored})
     return rows
+
+
+if __name__ == "__main__":
+    report_path = Path("runs/enterprise-rag-qwen-core-v1/report.json")
+    print(json.dumps(sweep_report(report_path), indent=2, sort_keys=True))
