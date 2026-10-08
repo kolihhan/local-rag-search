@@ -23,6 +23,17 @@ def test_rrf_uses_ranks_not_incompatible_raw_scores():
     assert fused[1].source_ranks == {"lex": 2, "vec": 1}
 
 
+def test_rrf_can_bias_toward_a_stronger_source_without_changing_rank_provenance():
+    fused = reciprocal_rank_fusion(
+        {"lex": [("a", 10.0), ("b", 9.0)], "vec": [("b", 0.9), ("a", 0.8)]},
+        k=60,
+        weights={"lex": 1.5, "vec": 1.0},
+    )
+    assert [row.doc_id for row in fused[:2]] == ["a", "b"]
+    assert fused[0].source_ranks == {"lex": 1, "vec": 2}
+    assert fused[1].source_ranks == {"lex": 2, "vec": 1}
+
+
 def test_typed_query_routes_lex_and_vec_and_exposes_explain_signals(tmp_path):
     service = SearchService.from_documents(docs(), embedding_provider=SimpleEmbeddingProvider(), cache_path=tmp_path / "dense.json")
     plan = QueryPlan(
