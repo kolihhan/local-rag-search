@@ -23,6 +23,18 @@ def test_rrf_uses_ranks_not_incompatible_raw_scores():
     assert fused[1].source_ranks == {"lex": 2, "vec": 1}
 
 
+def test_rrf_can_weight_a_more_reliable_source_without_changing_rank_semantics():
+    rankings = {
+        "bm25": [("relevant", 1000.0), ("other", 10.0)],
+        "dense": [("other", 0.99), ("relevant", 0.01)],
+    }
+    equal = reciprocal_rank_fusion(rankings, k=60)
+    weighted = reciprocal_rank_fusion(rankings, k=60, weights={"bm25": 1.5, "dense": 1.0})
+    assert [row.doc_id for row in equal] == ["other", "relevant"]
+    assert [row.doc_id for row in weighted] == ["relevant", "other"]
+    assert weighted[0].source_ranks == {"bm25": 1, "dense": 2}
+
+
 def test_typed_query_routes_lex_and_vec_and_exposes_explain_signals(tmp_path):
     service = SearchService.from_documents(docs(), embedding_provider=SimpleEmbeddingProvider(), cache_path=tmp_path / "dense.json")
     plan = QueryPlan(
