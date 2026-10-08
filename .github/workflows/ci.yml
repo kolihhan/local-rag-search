@@ -22,5 +22,61 @@ jobs:
         run: python -m pip install -e ".[dev]"
       - name: Test
         run: python -m pytest -q
+      - name: Screen weighted RRF on frozen top-20 rankings
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("runs/enterprise-rag-qwen-core-v1/report.json").read_text(encoding="utf-8"))
+          bm25 = report["arms"]["bm25"]["per_query"]
+          dense = report["arms"]["dense"]["per_query"]
+          qids = report["question_ids"]
+          k = 60
+
+          def fuse(qid, wb, wd=1.0):
+              scores = {}
+              for weight, rows in ((wb, bm25[qid]["ranking"]), (wd, dense[qid]["ranking"])):
+                  for rank, doc_id in enumerate(rows, 1):
+                      scores[doc_id] = scores.get(doc_id, 0.0) + weight / (k + rank)
+              return [doc_id for doc_id, _ in sorted(scores.items(), key=lambda item: (-item[1], item[0]))[:20]]
+
+          def metrics(wb):
+              recalls = []
+              reciprocal = []
+              hits = []
+              recovered = []
+              regressed = []
+              for qid in qids:
+                  gold = set(bm25[qid]["gold_ranks"])
+                  ranking = fuse(qid, wb)
+                  top10 = set(ranking[:10])
+                  recall = len(gold & top10) / len(gold)
+                  first = next((i for i, doc_id in enumerate(ranking[:20], 1) if doc_id in gold), None)
+                  hit = bool(gold & top10)
+                  base_hit = bool(bm25[qid]["hit_at_10"])
+                  recalls.append(recall)
+                  reciprocal.append(1.0 / first if first else 0.0)
+                  hits.append(hit)
+                  if not base_hit and hit:
+                      recovered.append(qid)
+                  if base_hit and not hit:
+                      regressed.append(qid)
+              n = len(qids)
+              return {
+                  "wb": wb,
+                  "recall10": sum(recalls) / n,
+                  "mrr20": sum(reciprocal) / n,
+                  "hit10": sum(hits) / n,
+                  "recoveries": recovered,
+                  "regressions": regressed,
+              }
+
+          print("NOTE: screening only; source rankings are truncated to top-20, while canonical RRF used top-60 candidates.")
+          canonical = report["arms"]["rrf"]
+          print("canonical_equal_weight_top60", canonical["recall_at_10"], canonical["mrr_at_20"], canonical["hit_at_10"])
+          for weight in (1.0, 1.05, 1.1, 1.2, 1.25, 1.35, 1.5, 1.75, 2.0, 2.5, 3.0):
+              print(json.dumps(metrics(weight), sort_keys=True))
+          PY
       - name: Compile
         run: python -m compileall -q src evaluation tests
