@@ -11,13 +11,16 @@ class FusedDocument:
 
 
 def reciprocal_rank_fusion(
-    rankings: dict[str, list[tuple[str, float]]], *, k: int = 60
+    rankings: dict[str, list[tuple[str, float]]], *, k: int = 60,
+    weights: dict[str, float] | None = None,
 ) -> list[FusedDocument]:
+    weights = weights or {}
     scores: dict[str, float] = {}
     source_ranks: dict[str, dict[str, int]] = {}
     for source, rows in rankings.items():
+        weight = float(weights.get(source, 1.0))
         for rank, (doc_id, _raw_score) in enumerate(rows, start=1):
-            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
+            scores[doc_id] = scores.get(doc_id, 0.0) + weight / (k + rank)
             source_ranks.setdefault(doc_id, {})[source] = rank
     fused = [FusedDocument(doc_id, score, source_ranks[doc_id]) for doc_id, score in scores.items()]
     fused.sort(key=lambda row: (-row.score, row.doc_id))
