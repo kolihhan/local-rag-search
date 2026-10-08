@@ -6,12 +6,12 @@ def test_score_weighted_rrf_report_tracks_rescues_and_regressions():
         "question_ids": ["q1", "q2"],
         "arms": {
             "bm25": {"per_query": {
-                "q1": {"gold_ranks": {"gold1": 1}, "ranking": ["gold1", "x", "y"]},
-                "q2": {"gold_ranks": {"gold2": None}, "ranking": ["a", "b", "c"]},
+                "q1": {"gold_ranks": {"gold1": 1}, "ranking": ["gold1", "x"]},
+                "q2": {"gold_ranks": {"gold2": None}, "ranking": ["a"]},
             }},
             "dense": {"per_query": {
-                "q1": {"gold_ranks": {"gold1": 3}, "ranking": ["x", "y", "gold1"]},
-                "q2": {"gold_ranks": {"gold2": 1}, "ranking": ["gold2", "b", "c"]},
+                "q1": {"gold_ranks": {"gold1": 2}, "ranking": ["x", "gold1"]},
+                "q2": {"gold_ranks": {"gold2": 1}, "ranking": ["gold2"]},
             }},
         },
     }
