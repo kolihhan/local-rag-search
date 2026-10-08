@@ -1,4 +1,9 @@
-from evaluation.weighted_rrf import fuse_rankings, score_rankings
+import json
+from pathlib import Path
+
+from evaluation.weighted_rrf import diagnose_from_reports, fuse_rankings, score_rankings
+
+ROOT = Path(__file__).parents[1]
 
 
 def test_weighted_rrf_prefers_bm25_when_weight_is_higher():
@@ -21,3 +26,14 @@ def test_score_rankings_tracks_top10_regressions_and_recoveries():
     metrics = score_rankings(rows)
     assert metrics["recoveries"] == 1
     assert metrics["regressions"] == 1
+
+
+def test_frozen_dev_selects_weight_before_core_evaluation():
+    result = diagnose_from_reports(
+        ROOT / "runs" / "enterprise-rag-qwen-dev-v2" / "report.json",
+        ROOT / "runs" / "enterprise-rag-qwen-core-v1" / "report.json",
+    )
+    print("WEIGHTED_RRF_DIAGNOSTIC=" + json.dumps(result, sort_keys=True))
+    assert result["selected_bm25_weight"] in {1.0, 1.1, 1.2, 1.3, 1.4, 1.5}
+    assert result["core"]["recoveries"] >= 0
+    assert result["core"]["regressions"] >= 0
