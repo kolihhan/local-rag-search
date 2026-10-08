@@ -13,6 +13,9 @@ on:
 permissions:
   contents: read
 
+env:
+  PYTHONPATH: .
+
 jobs:
   weighted-rrf-top60:
     runs-on: ubuntu-latest
@@ -29,13 +32,13 @@ jobs:
         run: python -m pip install -e ".[dev]"
       - name: Install Ollama
         run: curl -fsSL https://ollama.com/install.sh | sh
-      - name: Start Ollama and pull embedding model
+      - name: Wait for Ollama and pull embedding model
         run: |
-          ollama serve > /tmp/ollama.log 2>&1 &
           for i in {1..30}; do
             if curl -fsS http://127.0.0.1:11434/api/tags >/dev/null; then break; fi
             sleep 1
           done
+          curl -fsS http://127.0.0.1:11434/api/tags >/dev/null
           ollama pull qwen3-embedding:0.6b
       - name: Download frozen EnterpriseRAG v1.0.0 inputs
         run: |
@@ -63,8 +66,6 @@ jobs:
         run: |
           if [ -f weighted-rrf-top60-result.json ]; then
             python -c "import json; d=json.load(open('weighted-rrf-top60-result.json')); print(json.dumps({'baseline_reproduced':d.get('baseline_reproduced'),'promotion_status':d.get('promotion_status'),'winner':d.get('winner')}, indent=2))"
-          else
-            cat /tmp/ollama.log || true
           fi
       - name: Upload diagnostic artifact
         if: always()
